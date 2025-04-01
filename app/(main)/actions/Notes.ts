@@ -37,6 +37,7 @@ export const sendEmailToSubscribersAction = async (
       if (!emailSend) {
         console.error(`Failed to send email to ${subscriber.email}`);
       }
+      await new Promise((resolve) => setTimeout(resolve, 500));
     }
 
     await prisma.notes.create({
