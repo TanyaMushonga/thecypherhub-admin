@@ -13,7 +13,7 @@ export const sendConfirmationEmailAfterSubscribe = async (
     const { data, error } = await resend.emails.send({
       from: "TanyaMushonga@thecypherhub.tech",
       to: email,
-      subject: `Hi ${extractNameFromEmail(email)}, confirm your subscription to The Cypher Hub!`,
+      subject: `Welcome to The CypherHub Newsletter, ${extractNameFromEmail(email)}`,
       html: `  <table
       align="center"
       width="600"
@@ -37,33 +37,53 @@ export const sendConfirmationEmailAfterSubscribe = async (
         </td>
       </tr>
       <tr>
-     <tr>
-            <td align="center">
-              <h2 style="color: #333; text-align: center; font-size: 24px;">
-                Hi ${extractNameFromEmail(email)},
-              </h2>
-              <p style="font-size: 16px; line-height: 1.5; color: #555;">
-                Thank you for subscribing to The Cypher Hub! We're excited to have you on board.
-              </p>
-              <p style="font-size: 16px; line-height: 1.5; color: #555;">
-                Please confirm your subscription by clicking the button below:
-              </p>
-              <a
-                href="${confirmationLink}"
-                style="
-                  display: inline-block;
-                  padding: 10px 20px;
-                  color: #fff;
-                  background-color: #007bff;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  font-size: 16px;
-                "
-              >
-                Confirm Subscription
-              </a>
-            </td>
-          </tr>
+        <td align="center">
+          <h2 style="color: #fff; text-align: center;">
+            Thank you for subscribing to our newsletter!
+          </h2>
+        </td>
+      </tr>
+      <tr>
+        <td style="font-style: italic; color: #555; text-align: center">
+          "The only way to do great work is to love what you do. Keep coding,
+          keep building!"
+        </td>
+      </tr>
+      <tr>
+        <td class="content">
+          <p style="color: #fff">
+            We're excited to have you on board  ${extractNameFromEmail(email)}. Please confirm your subscription
+            by clicking the link below:
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="margin: 20px 0">
+          <a
+            href="${confirmationLink}"
+            class="button"
+            style="
+              display: inline-block;
+              padding: 10px 20px;
+              color: #fff;
+              background-color: #274463;
+              text-decoration: none;
+              border-radius: 5px;
+            "
+            >Confirm Subscription</a
+          >
+        </td>
+      </tr>
+
+      <tr>
+        <td class="content">
+          <p style="color: #fff">
+           You will be receiving weekly emails about new articles, trending technology, coding tips, and
+            much more. Stay tuned for exciting updates and valuable content to
+            help you stay ahead in the tech world.
+          </p>
+        </td>
+      </tr>
       <tr>
         <td class="content">
           <p style="color: #fff">

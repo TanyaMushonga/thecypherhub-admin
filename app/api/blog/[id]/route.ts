@@ -1,6 +1,7 @@
 import { validateRequest } from "@/auth";
 import prisma from "../../../../lib/prisma";
 import { put, del } from "@vercel/blob";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: Request) {
   try {
@@ -15,13 +16,13 @@ export async function GET(req: Request) {
 
     const blog = await prisma.articles.findUnique({
       where: { slug: slug },
-      include:{
+      include: {
         comments: {
           orderBy: {
             createdAt: "desc",
           },
-        }
-      }
+        },
+      },
     });
 
     if (!blog) {
@@ -119,15 +120,10 @@ export async function PATCH(req: Request) {
       data: updatedData,
     });
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/revalidate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        paths: ["/api/blog"],
-      }),
-    });
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${slug}`);
+    revalidatePath("/api/blogs");
+    revalidatePath(`/api/blog/${slug}`);
 
     return new Response(JSON.stringify(updatedBlog), {
       status: 200,
@@ -179,15 +175,9 @@ export async function DELETE(req: Request) {
       where: { slug: slug, authorId: loggedInUser.id },
     });
 
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/revalidate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        paths: ["/api/blog"],
-      }),
-    });
+    revalidatePath("/blog");
+    revalidatePath(`/blog/${slug}`);
+    revalidatePath("/api/blogs");
 
     return new Response(
       JSON.stringify({ message: "Blog deleted successfully" }),

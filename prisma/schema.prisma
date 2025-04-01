@@ -62,7 +62,6 @@ model subscribers {
   email     String   @unique
   status    Int      @default(0)
   createdAt DateTime @default(now())
-  notes     notes[]
 
   @@map("subscribers")
 }
@@ -79,9 +78,6 @@ model notes {
   content   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  subscribers   subscribers? @relation(fields: [subscribersId], references: [id])
-  subscribersId String?
 }
 
 model comments {
