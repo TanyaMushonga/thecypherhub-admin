@@ -52,7 +52,7 @@ export const sendConfirmationEmailAfterSubscribe = async (
       <tr>
         <td class="content">
           <p style="color: #fff">
-            We're excited to have you on board. Please confirm your subscription
+            We're excited to have you on board  ${extractNameFromEmail(email)}. Please confirm your subscription
             by clicking the link below:
           </p>
         </td>
@@ -78,8 +78,7 @@ export const sendConfirmationEmailAfterSubscribe = async (
       <tr>
         <td class="content">
           <p style="color: #fff">
-            Welcome to The CypherHub Newsletter! You will be receiving weekly
-            emails about new articles, trending technology, coding tips, and
+           You will be receiving weekly emails about new articles, trending technology, coding tips, and
             much more. Stay tuned for exciting updates and valuable content to
             help you stay ahead in the tech world.
           </p>
