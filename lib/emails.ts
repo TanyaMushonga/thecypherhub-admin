@@ -11,7 +11,7 @@ export const sendConfirmationEmailAfterSubscribe = async (
   const confirmationLink = `https://www.thecypherhub.tech/new-verification?token=${token}`;
   try {
     const { data, error } = await resend.emails.send({
-      from: "TanyaMushonga@thecypherhub.tech",
+      from: "Tanyaradzwa T Mushonga <subscriptions@thecypherhub.tech>",
       to: email,
       subject: `Hi ${extractNameFromEmail(email)}, confirm your subscription to The Cypher Hub!`,
       html: `  <table
@@ -160,7 +160,7 @@ export const sendEmailToMyself = async (
 ) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: "TanyaMushonga@thecypherhub.tech",
+      from: "Tanyaradzwa T Mushonga <newsletter@thecypherhub.tech>",
       to: "tanyaradzwatmushonga@gmail.com",
       subject: `${subject}`,
       react: NoteEmail({
@@ -188,7 +188,7 @@ export const sendEmailToSubscribers = async (
 ) => {
   try {
     const { data, error } = await resend.emails.send({
-      from: "TanyaMushonga@thecypherhub.tech",
+      from: "Tanyaradzwa T Mushonga <newsletter@thecypherhub.tech>",
       to: `${email}`,
       subject: `${subject}`,
       react: NoteEmail({ htmlContent, email }),
