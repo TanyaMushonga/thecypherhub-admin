@@ -76,263 +76,248 @@
 }
 
 /* Custom scrollbar for WebKit browsers (Chrome, Safari) */
+/* Editor Base Styles */
+.tiptap-editor {
+  background-color: #171e42;
+  color: #e5e7eb;
+  font-size: 16px;
+  line-height: 1.6;
+  padding: 1rem;
+  min-height: 80vh;
+  border-radius: 0.5rem;
+  border: 1px solid #374151;
+}
+
+/* Scrollbar Styles */
 .tiptap-editor::-webkit-scrollbar {
-  width: 12px;
+  width: 8px;
 }
 
 .tiptap-editor::-webkit-scrollbar-track {
-  background: #5606b1;
-  border-radius: 10px;
+  background: #1f2937;
+  border-radius: 8px;
 }
 
 .tiptap-editor::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 10px;
+  background: #4b5563;
+  border-radius: 8px;
+  border: 2px solid #1f2937;
 }
 
 .tiptap-editor::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #60a5fa;
 }
 
-/* Custom scrollbar for Firefox */
+/* Firefox Scrollbar */
 .tiptap-editor {
   scrollbar-width: thin;
-  scrollbar-color: #706a8b hsl(var(--primary));
-  border-radius: 0.5rem;
+  scrollbar-color: #4b5563 #1f2937;
 }
 
+/* Content Styles */
 .tiptap {
-  :first-child {
-    margin-top: 0;
-  }
-
-  /* List styles */
-  ul,
-  ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
-
-    li p {
-      margin-top: 0.25em;
-      margin-bottom: 0.25em;
-    }
-  }
-
-  /* Heading styles */
+  /* Headings */
   h1,
   h2,
   h3,
   h4,
   h5,
   h6 {
-    line-height: 1.1;
-    margin-top: 2.5rem;
-    text-wrap: pretty;
-  }
-
-  h1,
-  h2 {
-    margin-top: 3.5rem;
-    margin-bottom: 1.5rem;
+    color: #ffffff;
+    font-weight: 600;
+    margin: 1.5rem 0 1rem;
+    line-height: 1.3;
   }
 
   h1 {
-    font-size: 1.4rem;
+    font-size: 2rem;
   }
-
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.75rem;
   }
-
   h3 {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
   }
-
-  h4,
+  h4 {
+    font-size: 1.25rem;
+  }
   h5,
   h6 {
     font-size: 1rem;
   }
 
-  /* Code and preformatted text styles */
-  pre {
-    background: black;
-    border-radius: 0.5rem;
-    color: white;
-    font-family: 'JetBrainsMono', monospace;
-    margin: 1.5rem 0;
-    padding: 0.75rem 1rem;
-    width: 100%;
-    height: auto;
+  /* Lists */
+  ul,
+  ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+    color: #e5e7eb;
+  }
 
-    code {
-      background: none;
-      color: inherit;
-      font-size: 0.8rem;
-      padding: 0;
+  ul {
+    list-style-type: disc;
+  }
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    margin: 0.5rem 0;
+    padding-left: 0.5rem;
+  }
+
+  ul li::marker,
+  ol li::marker {
+    color: #60a5fa;
+  }
+
+  /* Nested Lists */
+  ul ul,
+  ol ol,
+  ul ol,
+  ol ul {
+    margin: 0.5rem 0 0.5rem 1.5rem;
+  }
+
+  ul ul li::marker {
+    content: "◦";
+  }
+  ul ul ul li::marker {
+    content: "▪";
+  }
+
+  /* Tables */
+  table {
+    width: auto;
+    max-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    border: 2px solid #60a5fa;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  td,
+  th {
+    border: 1px solid #60a5fa;
+    padding: 0.75rem 1rem;
+    color: #e5e7eb;
+    background: transparent;
+    min-width: 100px;
+  }
+
+  th {
+    font-weight: 600;
+    text-align: left;
+    color: #ffffff;
+    border-bottom: 2px solid #60a5fa;
+  }
+
+  ::selection {
+    background: rgba(96, 165, 250, 0.2);
+    color: #ffffff;
+  }
+  /* Code Blocks */
+  pre {
+    background: transparent;
+
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    width: 100%;
+    white-space: pre-wrap; /* preserve line breaks, wrap text */
+    word-wrap: break-word; /* break long words */
+    position: relative;
+  }
+
+  pre code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+    display: block;
+    width: 100%;
+    border: 1px solid #1ca766;
+    padding: 5px;
+  }
+
+  /* Language label for code blocks */
+  pre::before {
+    content: attr(data-language);
+    position: absolute;
+    top: -0.75rem;
+    right: 1rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    background: #171e42;
+    color: #60a5fa;
+
+    border-radius: 0.25rem;
+    z-index: 1;
+  }
+
+  /* Inline code */
+  p > code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+    background: transparent;
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+  }
+
+  /* Inline Elements */
+  p {
+    margin: 1rem 0;
+    line-height: 1.6;
+  }
+
+  a {
+    color: #60a5fa;
+    text-decoration: none;
+    transition: color 0.2s;
+
+    &:hover {
+      color: #93c5fd;
+      text-decoration: underline;
     }
   }
 
+  /* Block Elements */
   blockquote {
-    border-left: 3px solid gray;
+    border-left: 4px solid #60a5fa;
     margin: 1.5rem 0;
-    padding-left: 1rem;
+    padding: 0.5rem 0 0.5rem 1rem;
+    background: #1f2937;
+    border-radius: 0 0.5rem 0.5rem 0;
   }
 
   hr {
     border: none;
-    border-top: 1px solid var(--gray-2);
+    border-top: 2px solid #374151;
     margin: 2rem 0;
   }
 
-  a {
-    color: rgb(79, 109, 226);
-    cursor: pointer;
-
-    &:hover {
-      color: purple;
-    }
-  }
-
-  /* Code styling */
-  .hljs-comment,
-  .hljs-quote {
-    color: #616161;
-  }
-
-  .hljs-variable,
-  .hljs-template-variable,
-  .hljs-attribute,
-  .hljs-tag,
-  .hljs-regexp,
-  .hljs-link,
-  .hljs-name,
-  .hljs-selector-id,
-  .hljs-selector-class {
-    color: #f98181;
-  }
-
-  .hljs-number,
-  .hljs-meta,
-  .hljs-built_in,
-  .hljs-builtin-name,
-  .hljs-literal,
-  .hljs-type,
-  .hljs-params {
-    color: #fbbc88;
-  }
-
-  .hljs-string,
-  .hljs-symbol,
-  .hljs-bullet {
-    color: #b9f18d;
-  }
-
-  .hljs-title,
-  .hljs-section {
-    color: #faf594;
-  }
-
-  .hljs-keyword,
-  .hljs-selector-tag {
-    color: #70cff8;
-  }
-
-  .hljs-emphasis {
-    font-style: italic;
-  }
-
-  .hljs-strong {
-    font-weight: 700;
-  }
-
+  /* Images */
   img {
-    display: block;
-    height: auto;
-    margin: 1.5rem 0;
     max-width: 100%;
-
-    &.ProseMirror-selectednode {
-      outline: 3px solid var(--purple);
-    }
+    height: auto;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
   }
 
-  .tiptap {
-    :first-child {
-      margin-top: 0;
-    }
-
-    /* Table-specific styling */
-    table {
-      border-collapse: collapse;
-      margin: 0;
-      overflow: hidden;
-      table-layout: fixed;
-      width: 100%;
-
-      td,
-      th {
-        border: 1px solid var(--gray-3);
-        box-sizing: border-box;
-        min-width: 1em;
-        padding: 6px 8px;
-        position: relative;
-        vertical-align: top;
-
-        >* {
-          margin-bottom: 0;
-        }
-      }
-
-      th {
-        background-color: var(--gray-1);
-        font-weight: bold;
-        text-align: left;
-      }
-
-      .selectedCell:after {
-        background: var(--gray-2);
-        content: "";
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        pointer-events: none;
-        position: absolute;
-        z-index: 2;
-      }
-
-      .column-resize-handle {
-        background-color: var(--purple);
-        bottom: -2px;
-        pointer-events: none;
-        position: absolute;
-        right: -2px;
-        top: 0;
-        width: 4px;
-      }
-    }
-
-    .tableWrapper {
-      margin: 1.5rem 0;
-      overflow-x: auto;
-    }
-
-    &.resize-cursor {
-      cursor: ew-resize;
-      cursor: col-resize;
-    }
+  /* Toolbar */
+  .ql-toolbar {
+    background: transparent !important;
+    border: 2px solid #60a5fa !important;
+    border-bottom: none !important;
+    border-radius: 0.5rem 0.5rem 0 0 !important;
+    padding: 0.75rem !important;
   }
 
-}
-.ql-toolbar .ql-stroke {
-  stroke: #ffffff; /* Change the stroke color of icons to white */
-}
-
-.ql-toolbar .ql-fill {
-  fill: #ffffff; /* Change the fill color of icons to white */
-}
-
-.ql-toolbar button {
-  color: #ffffff; /* Ensure button text/icons are white */
+  .ql-container {
+    border: 2px solid #60a5fa !important;
+    border-top: none !important;
+    border-radius: 0 0 0.5rem 0.5rem !important;
+  }
 }

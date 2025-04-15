@@ -39,7 +39,12 @@ interface TiptapProps {
   clearEditor: boolean;
 }
 
-const Tiptap = ({ onChange, content, immediatelyRender, clearEditor }: TiptapProps) => {
+const Tiptap = ({
+  onChange,
+  content,
+  immediatelyRender,
+  clearEditor,
+}: TiptapProps) => {
   const handleChange = (newContent: string) => {
     onChange(newContent);
   };
@@ -56,6 +61,7 @@ const Tiptap = ({ onChange, content, immediatelyRender, clearEditor }: TiptapPro
       Table.configure({
         resizable: true,
       }),
+
       TableRow,
       TableHeader,
       TableCell,
@@ -151,7 +157,7 @@ const Tiptap = ({ onChange, content, immediatelyRender, clearEditor }: TiptapPro
     if (clearEditor) {
       clearEditorContent();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clearEditor]);
 
   useEffect(() => {
