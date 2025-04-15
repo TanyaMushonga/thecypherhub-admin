@@ -1,6 +1,7 @@
 import NoteEmail from "@/emails/note";
 import { Resend } from "resend";
 import { extractNameFromEmail } from "./utils";
+import CommentNotificationEmail from "@/emails/notification";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
@@ -223,5 +224,32 @@ export const sendEmailToSubscribers = async (
   } catch (error) {
     console.error("Error sending email to myself:", error);
     throw new Error("Error sending email to myself");
+  }
+};
+
+export const sendCommentNotification = async (
+  articleTitle: string,
+  comment: string
+) => {
+  try {
+    const { data, error } = await resend.emails.send({
+      from: "Tanyaradzwa T Mushonga <notifications@thecypherhub.tech>",
+      to: "tanyaradzwatmushonga@gmail.com",
+      subject: `New Comment on "${articleTitle}"`,
+      react: CommentNotificationEmail({
+        articleTitle,
+        comment,
+      }),
+    });
+
+    if (error) {
+      console.error("Error sending comment notification:", error);
+      throw new Error("Error sending comment notification");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error sending comment notification:", error);
+    throw new Error("Error sending comment notification");
   }
 };

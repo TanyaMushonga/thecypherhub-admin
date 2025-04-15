@@ -1,3 +1,4 @@
+import { sendCommentNotification } from "@/lib/emails";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
@@ -66,18 +67,16 @@ export const POST = async (request: Request) => {
         },
       },
     });
+    const article = await prisma.articles.findUnique({
+      where: {
+        id: articleId,
+      },
+    });
 
-    if (!newComment) {
-      return new Response(
-        JSON.stringify({ error: "Failed to create comment" }),
-        {
-          status: 500,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-    }
+    await sendCommentNotification(
+      article?.title ?? "Untitled Article",
+      comment
+    );
 
     return new Response(JSON.stringify(newComment), {
       status: 201,
