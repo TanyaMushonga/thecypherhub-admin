@@ -321,3 +321,129 @@
     border-radius: 0 0 0.5rem 0.5rem !important;
   }
 }
+
+.p.prose {
+  white-space: pre-line;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose li {
+  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose p {
+  margin-bottom: 1rem;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose h3,
+.prose h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+  line-height: 1.75;
+}
+
+.prose strong {
+  font-weight: bold;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose a {
+  text-decoration: underline;
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+
+.prose pre {
+  background-color: rgb(2, 14, 53);
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(28, 23, 97);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+  color: #449e34;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  /* Ensure long lines break and wrap */
+}
+
+.prose code {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #449e34;
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+  /* Ensure long lines break and wrap */
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  .prose pre {
+    font-size: 0.875rem;
+    /* Adjust font size for smaller screens */
+    padding: 0.5rem;
+    /* Adjust padding for smaller screens */
+  }
+
+  .prose code {
+    font-size: 0.75rem;
+    /* Adjust font size for smaller screens */
+    padding: 0.25rem;
+    /* Adjust padding for smaller screens */
+  }
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  background-color: rgb(18, 27, 66);
+  color: rgb(255, 255, 255);
+}
+
+.prose th,
+.prose td {
+  border: 1px solid rgb(28, 23, 97);
+  padding: 0.5rem 0.6rem;
+  text-align: left;
+}
+
+.prose th {
+  background-color: rgb(4, 4, 22);
+  color: white;
+  font-weight: bold;
+}
