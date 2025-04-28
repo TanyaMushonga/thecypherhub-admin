@@ -7,7 +7,7 @@ interface BlogPreviewProps {
 function BlogPreview({ content }: BlogPreviewProps) {
   return (
     <div
-      className="prose prose-blue dark:prose-invert max-w-none text-white"
+      className="prose max-h-[80vh] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent"
       dangerouslySetInnerHTML={{
         __html: content,
       }}
