@@ -5,6 +5,15 @@ import toast from "react-hot-toast";
 import { Image as ImageIcon } from "lucide-react";
 import { notFound, useParams } from "next/navigation";
 import axios from "axios";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import BlogPreview from "./blogPreview";
+import { Button } from "../ui/button";
 
 type blogContent = {
   title: string;
@@ -294,6 +303,22 @@ function UpdateBlog() {
               ref={ref}
               id="blog_cover"
             />
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant={"default"}
+                  className="bg-blue-200 text-black ms-5 hover:bg-blue-300"
+                >
+                  Preview
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="bg-blue-950">
+                <SheetHeader>
+                  <SheetTitle className="text-white">Preview</SheetTitle>
+                  <BlogPreview content={content.content} />
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
           </div>
           <div className="flex flex-col w-full mb-4">
             <div className="flex flex-row gap-2">

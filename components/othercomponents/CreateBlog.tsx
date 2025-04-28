@@ -3,6 +3,15 @@ import React, { useState, useRef, useEffect } from "react";
 import Tiptap from "./Tiptap";
 import toast from "react-hot-toast";
 import { Image as ImageIcon } from "lucide-react";
+import { Button } from "../ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import BlogPreview from "./blogPreview";
 
 type blogContent = {
   title: string;
@@ -225,7 +234,7 @@ const CreateBlog = () => {
               }
             ></textarea>
           </div>
-          <div className="flex flex-col w-full mb-4">
+          <div className="flex flex-row w-full mb-4">
             <label htmlFor="blog_cover" className="text-sky-300 cursor-pointer">
               <ImageIcon className="w-10 h-10" />
             </label>
@@ -237,6 +246,23 @@ const CreateBlog = () => {
               ref={ref}
               id="blog_cover"
             />
+
+            <Sheet>
+              <SheetTrigger asChild>
+                <Button
+                  variant={"default"}
+                  className="bg-blue-200 text-black ms-5 hover:bg-blue-300"
+                >
+                  Preview
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="bg-blue-950">
+                <SheetHeader>
+                  <SheetTitle className="text-white">Preview</SheetTitle>
+                  <BlogPreview content={content.content} />
+                </SheetHeader>
+              </SheetContent>
+            </Sheet>
           </div>
           <div className="flex flex-col w-full mb-4">
             <div className="flex flex-row gap-2">

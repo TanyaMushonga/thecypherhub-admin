@@ -18,56 +18,82 @@ export const sendEmailToMyselfAction = async (
 
 export const sendEmailToSubscribersAction = async (
   htmlContent: string,
-  subject: string
+  subject: string,
+  options?: { batchSize?: number; maxRetries?: number }
 ) => {
+  const BATCH_SIZE = options?.batchSize || 2; // Configurable
+  const MAX_RETRIES = options?.maxRetries || 3;
+
   try {
-    const subscribers = await prisma.subscribers.findMany({
-      where: { status: 1 },
-      select: { email: true }, // Fetch only the necessary field
-    });
-
-    if (subscribers.length === 0) {
-      return { error: "No active subscribers found" };
+    // Validate inputs
+    if (!htmlContent || !subject) {
+      throw new Error("htmlContent and subject are required");
     }
 
-    const batchSize = 2; // Resend allows 2 emails per second
-    for (let i = 0; i < subscribers.length; i += batchSize) {
-      const batch = subscribers.slice(i, i + batchSize);
+    // Fetch subscribers in pages to avoid memory issues
+    let skip = 0;
+    const take = 1000;
+    const failedEmails: string[] = [];
 
-      await Promise.all(
-        batch.map((subscriber) =>
-          sendEmailToSubscribers(htmlContent, subject, subscriber.email)
-            .then((emailSend) => {
-              if (!emailSend) {
-                console.error(`Failed to send email to ${subscriber.email}`);
-              }
-            })
-            .catch((error) => {
-              console.error(
-                `Error sending email to ${subscriber.email}:`,
-                error
-              );
-            })
-        )
-      );
+    while (true) {
+      const subscribers = await prisma.subscribers.findMany({
+        where: { status: 1 },
+        select: { email: true },
+        skip,
+        take,
+      });
 
-      // Wait for 1 second before processing the next batch
-      if (i + batchSize < subscribers.length) {
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (subscribers.length === 0) break;
+
+      // Process in batches
+      for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
+        const batch = subscribers.slice(i, i + BATCH_SIZE);
+        await Promise.all(
+          batch.map((subscriber) =>
+            retry(
+              () =>
+                sendEmailToSubscribers(htmlContent, subject, subscriber.email),
+              MAX_RETRIES
+            ).catch(() => failedEmails.push(subscriber.email))
+          )
+        );
+
+        // Rate limiting
+        if (i + BATCH_SIZE < subscribers.length) {
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+        }
       }
+
+      skip += take;
     }
 
-    // Store the email content in the database
-    await prisma.notes.create({
-      data: { content: htmlContent, subject },
-    });
+    // Log the email campaign
+    await prisma.notes.create({ data: { content: htmlContent, subject } });
 
-    return { success: "Emails sent successfully to all subscribers" };
+    return {
+      success: failedEmails.length === 0,
+      failedEmails, // Report failures
+    };
   } catch (error) {
-    console.error("Error sending emails to subscribers:", error);
-    return { error: "Error sending emails to subscribers" };
+    console.error("Error in sendEmailToSubscribersAction:", error);
+    return { success: false, error: error instanceof Error ? error.message : "An unknown error occurred" };
   }
 };
+
+// Helper: Retry with exponential backoff
+async function retry<T>(fn: () => Promise<T>, maxRetries: number): Promise<T> {
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt >= maxRetries - 1) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** attempt));
+      attempt++;
+    }
+  }
+  throw new Error("Max retries exceeded");
+}
 
 export const fetchAllNotes = async () => {
   try {
