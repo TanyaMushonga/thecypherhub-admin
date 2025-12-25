@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { client } from "@/trigger";
+
 import { v4 as uuidv4 } from "uuid";
 
 export async function POST(req: NextRequest) {
@@ -42,13 +42,9 @@ export async function POST(req: NextRequest) {
     });
 
     // Trigger email job
-    await client.sendEvent({
-      name: "send.forgot.password",
-      payload: {
-        email,
-        token,
-      },
-    });
+    // TODO: Send password reset email via Resend
+    console.log("TODO: Send password reset email to", email, "token:", token);
+
 
     return NextResponse.json({ success: true });
   } catch (error) {
