@@ -97,37 +97,48 @@ const CreateBlog = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!content.title) {
-      setError("Title is required");
-      return;
-    } else if (!content.category) {
-      setError("Category is required");
-      return;
-    } else if (!content.description) {
-      setError("Description is required");
-      return;
-    } else if (!content.content) {
-      setError("Content is required");
-      return;
-    } else if (!content.keywords) {
-      setError("Keywords is required");
-      return;
-    } else if (!content.slug) {
-      setError("Slug is required");
-      return;
-    } else if (!blogCover) {
-      setError("Cover Image is required");
-      return;
-    }
-
-    const isValidImage = await validateImageDimensions(blogCover);
-    if (!isValidImage) {
-      setError("The blog cover must be 1200x630 pixels");
-      return;
-    }
-
     setLoading(true);
     setError("");
+
+    console.log("Submitting blog content:", content);
+    console.log("Blog cover:", blogCover);
+
+    if (!content.title) {
+      console.log("Validation failed: Title missing");
+      setError("Title is required");
+      setLoading(false);
+      return;
+    } else if (!content.category) {
+      console.log("Validation failed: Category missing");
+      setError("Category is required");
+      setLoading(false);
+      return;
+    } else if (!content.description) {
+      console.log("Validation failed: Description missing");
+      setError("Description is required");
+      setLoading(false);
+      return;
+    } else if (!content.content) {
+      console.log("Validation failed: Content missing");
+      setError("Content is required");
+      setLoading(false);
+      return;
+    } else if (!content.keywords || content.keywords.length === 0) {
+      console.log("Validation failed: Keywords missing");
+      setError("Keywords is required");
+      setLoading(false);
+      return;
+    } else if (!content.slug) {
+      console.log("Validation failed: Slug missing");
+      setError("Slug is required");
+      setLoading(false);
+      return;
+    } else if (!blogCover) {
+      console.log("Validation failed: Cover Image missing");
+      setError("Cover Image is required");
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData();
     formData.append("title", content.title);
@@ -252,6 +263,7 @@ const CreateBlog = () => {
                 <Button
                   variant={"default"}
                   className="bg-blue-200 text-black ms-5 hover:bg-blue-300"
+                  type="button"
                 >
                   Preview
                 </Button>
@@ -263,6 +275,14 @@ const CreateBlog = () => {
                 </SheetHeader>
               </SheetContent>
             </Sheet>
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="bg-blue-600 text-white ms-5 hover:bg-blue-700"
+            >
+              {loading ? "Publishing..." : "Publish"}
+            </Button>
           </div>
           <div className="flex flex-col w-full mb-4">
             <div className="flex flex-row gap-2">
