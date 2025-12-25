@@ -157,6 +157,21 @@ export const NoteEmail = ({ htmlContent, email }: NoteEmailProps) => (
                     style={{ height: "17px", width: "17px" }}
                   />
                 </Link>
+                <Link
+                  href="https://tanyaradzwatmushonga.me"
+                  style={{
+                    display: "inline-flex",
+                    height: "20px",
+                    marginLeft: "8px",
+                    width: "20px",
+                  }}
+                >
+                  <Img
+                    alt="Portfolio"
+                    src="https://www.thecypherhub.tech/portifolio.png"
+                    style={{ height: "17px", width: "17px" }}
+                  />
+                </Link>
               </Section>
             </Section>
           </Row>
