@@ -13,7 +13,7 @@ export const columns: ColumnDef<Subscribers>[] = [
       return (
         <Button
           variant="ghost"
-          className="bg-transparent"
+          className="text-slate-300 hover:text-white hover:bg-blue-900 pl-0"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Email
