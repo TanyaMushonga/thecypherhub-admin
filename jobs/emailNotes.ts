@@ -40,30 +40,43 @@ export const emailNotesJob = client.defineJob({
     let failedCount = 0;
 
     // 2. Process in batches
-    for (let i = 0; i < subscribers.length; i += BATCH_SIZE) {
-      const batch = subscribers.slice(i, i + BATCH_SIZE);
+    // 2. Process in batches with rate limiting
+    // Resend Free Tier: ~2 requests/sec. Paid: Higher.
+    // We'll be conservative: batch size 5, 2 second delay between batches.
+    const SAFE_BATCH_SIZE = 5; 
+    
+    for (let i = 0; i < subscribers.length; i += SAFE_BATCH_SIZE) {
+      const batch = subscribers.slice(i, i + SAFE_BATCH_SIZE);
 
       await Promise.all(
         batch.map(async (sub) => {
           try {
             await sendEmailToSubscribers(content, subject, sub.email);
             sentCount++;
-          } catch (error) {
+          } catch (error: any) {
+            // Check for rate limit error specifically if possible
+            if (error?.statusCode === 429) {
+                await io.logger.warn(`Rate limit hit for ${sub.email}. Pausing...`);
+                // In a robust system, we might retry THIS single item. 
+                // For now, allow it to fail or just log it.
+            }
             failedCount++;
             await io.logger.error(`Failed to send to ${sub.email}`, { error });
           }
         })
       );
 
-      // Update progress incrementally
+      // Update progress
       await prisma.notes.update({
         where: { id: noteId },
         data: { sentCount, failedCount },
       });
       
-      // Optional: Add a small delay to respect rate limits if needed, 
-      // primarily handled by io.wait if strictly required, but simple batching helps.
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Delay to respect rate limits. 
+      // Using io.wait is safer for long running jobs in Trigger.dev than setTimeout
+      if (i + SAFE_BATCH_SIZE < subscribers.length) {
+          await io.wait(`rate-limit-delay-${i}`, 2); // 2 seconds delay
+      }
     }
 
     // 3. Final update
