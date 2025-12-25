@@ -73,16 +73,16 @@ model verificationTokens {
 }
 
 model notes {
-  id        String   @id @default(uuid()) @map("_id")
-  subject   String
-  content          String
-  status           String   @default("Draft")
-  totalRecipients  Int      @default(0)
-  sentCount        Int      @default(0)
-  failedCount      Int      @default(0)
-  recipientsCount  Int      @default(0) // Keeping for backward compatibility if needed, or can remove if totalRecipients replaces it. I'll keep it for safety but focus on new cols.
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id              String   @id @default(uuid()) @map("_id")
+  subject         String
+  content         String
+  status          String   @default("Draft")
+  totalRecipients Int      @default(0)
+  sentCount       Int      @default(0)
+  failedCount     Int      @default(0)
+  recipientsCount Int      @default(0) // Keeping for backward compatibility if needed, or can remove if totalRecipients replaces it. I'll keep it for safety but focus on new cols.
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model comments {
