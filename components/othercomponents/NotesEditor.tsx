@@ -50,27 +50,31 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
 
         const editorContent = editor.getHTML();
         
-        // 1. Create Note (get ID)
-        const noteResponse = await fetch("/api/send-note", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ 
-                subject, 
-                content: editorContent,
-                isTest,
-                testEmail: isTest ? testEmail : undefined
-            }),
-        });
+        let noteId = "";
 
-        const noteData = await noteResponse.json();
+        // Only create a database record if it's NOT a test email
+        if (!isTest) {
+            // 1. Create Note (get ID)
+            const noteResponse = await fetch("/api/send-note", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    subject, 
+                    content: editorContent,
+                }),
+            });
 
-        if (!noteResponse.ok) {
-            throw new Error(noteData.error || "Failed to create note");
+            const noteData = await noteResponse.json();
+
+            if (!noteResponse.ok) {
+                throw new Error(noteData.error || "Failed to create note");
+            }
+            noteId = noteData.noteId;
         }
 
         if (isTest) {
-             // Test mode: Send batch of 1 immediately
-            await sendBatch([testEmail], subject, editorContent, noteData.noteId, "note");
+             // Test mode: Send batch of 1 immediately, no noteId needed
+            await sendBatch([testEmail], subject, editorContent, "", "note");
             toast.success("Test note sent!");
         } else {
              // Production mode: Fetch subscribers and batch send
@@ -90,7 +94,8 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
                 
                 setStatus(`Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total}) with 5 recipients`);
                 
-                await sendBatch(batch, subject, editorContent, noteData.noteId, "note");
+                // Pass the real noteId for tracking stats
+                await sendBatch(batch, subject, editorContent, noteId, "note");
                 sentCount += batch.length;
             }
              toast.success(`Sent to ${total} subscribers!`);
