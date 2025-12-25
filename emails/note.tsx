@@ -100,13 +100,13 @@ export const NoteEmail = ({ htmlContent, email }: NoteEmailProps) => (
                 verticalAlign: "top",
               }}
             >
-              <Heading
+                <Heading
                 as="h3"
                 style={{
                   color: "rgb(31,41,55)",
-                  fontSize: "13px",
-                  fontWeight: 500,
-                  lineHeight: "20px",
+                  fontSize: "15px",
+                  fontWeight: 600,
+                  lineHeight: "22px",
                   margin: "0px",
                 }}
               >
@@ -115,9 +115,9 @@ export const NoteEmail = ({ htmlContent, email }: NoteEmailProps) => (
               <Text
                 style={{
                   color: "rgb(107,114,128)",
-                  fontSize: "12px",
+                  fontSize: "14px",
                   fontWeight: 500,
-                  lineHeight: "14px",
+                  lineHeight: "16px",
                   margin: "0px",
                 }}
               >
@@ -125,52 +125,43 @@ export const NoteEmail = ({ htmlContent, email }: NoteEmailProps) => (
               </Text>
               <Section
                 style={{
-                  marginTop: "4px",
+                  marginTop: "8px",
                 }}
               >
                 <Link
                   href="https://github.com/TanyaMushonga"
                   style={{
-                    display: "inline-flex",
-                    height: "20px",
-                    width: "20px",
+                    color: "#2563eb",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    marginRight: "10px",
+                    textDecoration: "underline",
                   }}
                 >
-                  <Img
-                    alt="GitHub"
-                    src="https://www.thecypherhub.tech/github.png"
-                    style={{ height: "17px", width: "17px" }}
-                  />
+                  GitHub
                 </Link>
                 <Link
                   href="https://www.linkedin.com/in/tanyaradzwa-t-mushonga-b23745209/"
                   style={{
-                    display: "inline-flex",
-                    height: "20px",
-                    marginLeft: "8px",
-                    width: "20px",
+                    color: "#2563eb",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    marginRight: "10px",
+                    textDecoration: "underline",
                   }}
                 >
-                  <Img
-                    alt="LinkedIn"
-                    src="https://react.email/static/in-icon.png"
-                    style={{ height: "17px", width: "17px" }}
-                  />
+                  LinkedIn
                 </Link>
                 <Link
                   href="https://tanyaradzwatmushonga.me"
                   style={{
-                    display: "inline-flex",
-                    height: "20px",
-                    marginLeft: "8px",
-                    width: "20px",
+                    color: "#2563eb",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    textDecoration: "underline",
                   }}
                 >
-                  <Img
-                    alt="Portfolio"
-                    src="https://www.thecypherhub.tech/portifolio.png"
-                    style={{ height: "17px", width: "17px" }}
-                  />
+                  Portfolio
                 </Link>
               </Section>
             </Section>
@@ -245,8 +236,8 @@ const title = {
 };
 
 const paragraph = {
-  fontSize: "17px",
-  lineHeight: "21px",
+  fontSize: "18px",
+  lineHeight: "26px",
   color: "#3c3f44",
 };
 
