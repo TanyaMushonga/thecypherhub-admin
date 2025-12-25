@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Tiptap from "./Tiptap";
-import { Image as ImageIcon } from "lucide-react";
+import { Image as ImageIcon, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   Sheet,
@@ -40,6 +40,9 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
   const [keywordInput, setKeywordInput] = useState("");
   const [error, setError] = useState("");
   const [clearEditor, setClearEditor] = useState(false);
+  
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
 
   const ref = useRef<HTMLInputElement>(null);
 
@@ -63,15 +66,21 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     }
   }, [isEditing]);
 
+  // Auto-save effect with debounce
   useEffect(() => {
     if (!isEditing) {
-      const saveContent = () => {
-        localStorage.setItem("blogContent", JSON.stringify(content));
-      };
-      window.addEventListener("beforeunload", saveContent);
-      return () => {
-        window.removeEventListener("beforeunload", saveContent);
-      };
+        // Don't save empty initial state if it matches default
+       if (!content.title && !content.content && !content.slug) return;
+
+       setIsSaving(true);
+       
+       const timeoutId = setTimeout(() => {
+         localStorage.setItem("blogContent", JSON.stringify(content));
+         setLastSaved(new Date());
+         setIsSaving(false);
+       }, 1000); // 1s debounce
+   
+       return () => clearTimeout(timeoutId);
     }
   }, [content, isEditing]);
 
@@ -186,6 +195,15 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     }
   };
 
+
+
+  const getSaveStatus = () => {
+    if (isEditing) return "";
+    if (isSaving) return "Saving...";
+    if (lastSaved) return `Saved ${lastSaved.toLocaleTimeString()}`;
+    return "";
+  };
+
   return (
     <div className="w-full max-w-7xl mx-auto p-4">
       <Link href="/articles" className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-6">
@@ -207,7 +225,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
         {/* Sidebar Metadata Section */}
         <div className="w-full lg:w-[500px] flex flex-col gap-4 h-full overflow-y-auto no-scrollbar p-1">
             <div className="bg-blue-950 p-4 rounded-lg border border-blue-900 space-y-4">
-                <h2 className="text-xl font-semibold text-white mb-4">Article Details</h2>
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-xl font-semibold text-white">Article Details</h2>
+                    <span className="text-xs text-sky-400 font-mono transition-opacity duration-300">
+                        {getSaveStatus()}
+                    </span>
+                </div>
                 
                 {/* Title */}
                 <div className="space-y-2">
@@ -357,8 +380,9 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                     <Button 
                         type="submit" 
                         disabled={loading}
-                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
                     >
+                        {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                         {loading ? "Saving..." : isEditing ? "Update Article" : "Publish Article"}
                     </Button>
                 </div>
