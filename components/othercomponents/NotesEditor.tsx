@@ -16,6 +16,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
   const [testEmail, setTestEmail] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isSendingTest, setIsSendingTest] = useState(false);
+  const [status, setStatus] = useState("");
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -47,32 +48,54 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
         if (isTest) setIsSendingTest(true);
         else setIsSending(true);
 
-        const content = editor.getHTML();
+        const editorContent = editor.getHTML();
         
-        const response = await fetch("/api/send-note", {
+        // 1. Create Note (get ID)
+        const noteResponse = await fetch("/api/send-note", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ 
                 subject, 
-                content,
+                content: editorContent,
                 isTest,
                 testEmail: isTest ? testEmail : undefined
             }),
         });
 
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.indexOf("application/json") !== -1) {
-             const data = await response.json();
-             if (!response.ok) {
-                 throw new Error(data.error || "Failed to send note");
-             }
-        } else {
-             const text = await response.text();
-             console.error("Non-JSON API response:", text);
-             throw new Error("Server returned an unexpected error. Check console for details.");
+        const noteData = await noteResponse.json();
+
+        if (!noteResponse.ok) {
+            throw new Error(noteData.error || "Failed to create note");
         }
 
-        toast.success(isTest ? "Test note sent!" : "Note sent successfully to subscribers!");
+        if (isTest) {
+             // Test mode: Send batch of 1 immediately
+            await sendBatch([testEmail], subject, editorContent, noteData.noteId, "note");
+            toast.success("Test note sent!");
+        } else {
+             // Production mode: Fetch subscribers and batch send
+            setStatus("Fetching subscribers...");
+            const subResponse = await fetch("/api/subscribers");
+            const subData = await subResponse.json();
+            
+            if (!subResponse.ok) throw new Error(subData.error || "Failed to fetch subscribers");
+            
+            const subscribers: string[] = subData.emails;
+            const total = subscribers.length;
+            const batchSize = 5;
+            let sentCount = 0;
+
+            for (let i = 0; i < total; i += batchSize) {
+                const batch = subscribers.slice(i, i + batchSize);
+                
+                setStatus(`Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total}) with 5 recipients`);
+                
+                await sendBatch(batch, subject, editorContent, noteData.noteId, "note");
+                sentCount += batch.length;
+            }
+             toast.success(`Sent to ${total} subscribers!`);
+        }
+
         if (!isTest) {
             setSubject("");
             editor.commands.clearContent();
@@ -80,12 +103,32 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
         }
     } catch (error: any) {
         console.error(error);
-        toast.error(error.message);
+        toast.error(error.message || "Something went wrong");
     } finally {
         setIsSending(false);
         setIsSendingTest(false);
+        setStatus("");
     }
   };
+
+  const sendBatch = async (recipients: string[], subject: string, content: string, noteId: string, type: string) => {
+    const response = await fetch("/api/send-batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            recipients,
+            subject,
+            content,
+            noteId,
+            type
+        }),
+    });
+    
+    if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to send batch");
+    }
+};
 
   if (!editor) {
     return null;
@@ -162,11 +205,13 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
             </Button>
         </div>
 
-        <Button 
-            onClick={() => handleSend(false)} 
-            disabled={isSending || isSendingTest}
-            className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px]"
-        >
+        <div className="flex flex-col items-end gap-2">
+            {status && <span className="text-xs text-sky-300 animate-pulse font-mono">{status}</span>}
+            <Button 
+                onClick={() => handleSend(false)} 
+                disabled={isSending || isSendingTest}
+                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px]"
+            >
           {isSending ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...
@@ -177,6 +222,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
         </Button>
       </div>
     </div>
+  </div>
   );
 };
 
