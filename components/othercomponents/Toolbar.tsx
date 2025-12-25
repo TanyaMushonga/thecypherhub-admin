@@ -9,13 +9,22 @@ import {
   Italic,
   List,
   ListOrdered,
+  Heading1,
   Heading2,
+  Heading3,
+  Heading4,
+  Heading5,
+  Heading6,
   Underline,
   Quote,
   Undo,
   Redo,
   Code,
   Link,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
   Braces,
   Grid3x3,
   BetweenHorizontalStart,
@@ -24,18 +33,25 @@ import {
   BetweenVerticalStart,
   Grid2x2X,
   Image as ImageIcon,
+  Minus,
+  Maximize2
 } from "lucide-react";
 import { TbTableExport } from "react-icons/tb";
 
 import LinkDialog from "./urlDialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 type Props = {
   editor: Editor | null;
   content: string;
-
 };
 
-const Toolbar = ({ editor, content}: Props) => {
+const Toolbar = ({ editor, content }: Props) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [previousUrl, setPreviousUrl] = useState("");
   const [isTableActive, setIsTableActive] = useState(false);
@@ -102,178 +118,249 @@ const Toolbar = ({ editor, content}: Props) => {
   if (!editor) {
     return null;
   }
-  return (
-    <div
-      className="px-4 py-3 rounded-tl-md rounded-tr-md flex justify-between items-start
-    gap-5 w-full flex-wrap border border-gray-700"
+
+  const Separator = () => <div className="w-[1px] h-6 bg-blue-800 mx-1" />;
+
+  const ToolbarButton = ({ 
+    onClick, 
+    isActive, 
+    children, 
+    title 
+  }: { 
+    onClick: (e: React.MouseEvent) => void, 
+    isActive?: boolean, 
+    children: React.ReactNode,
+    title?: string 
+  }) => (
+    <button
+      onClick={onClick}
+      title={title}
+      className={`p-1.5 rounded-md transition-colors ${
+        isActive
+          ? "bg-blue-600 text-white"
+          : "text-slate-400 hover:bg-blue-800 hover:text-white"
+      }`}
     >
-      <div className="flex justify-start items-center gap-4 w-full lg:w-10/12 flex-wrap ">
-        <button
+      {children}
+    </button>
+  );
+
+  return (
+    <div className="w-full flex flex-wrap items-center gap-1 p-2 bg-blue-950">
+       {/* Undo/Redo */}
+       <div className="flex items-center gap-0.5">
+          <ToolbarButton
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus().undo().run();
+            }}
+            title="Undo"
+          >
+            <Undo className="w-4 h-4" />
+          </ToolbarButton>
+          <ToolbarButton
+            onClick={(e) => {
+              e.preventDefault();
+              editor.chain().focus().redo().run();
+            }}
+            title="Redo"
+          >
+            <Redo className="w-4 h-4" />
+          </ToolbarButton>
+      </div>
+
+       <Separator />
+
+      {/* Headings */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="flex items-center gap-1 px-2 py-1.5 text-slate-400 hover:bg-blue-800 hover:text-white rounded-md text-sm font-medium transition-colors">
+            {editor.isActive('heading', { level: 1 }) ? 'Title' :
+             editor.isActive('heading', { level: 2 }) ? 'Heading 1' :
+             editor.isActive('heading', { level: 3 }) ? 'Heading 2' :
+             'Normal'}
+             <span className="text-xs ml-1">▼</span>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="bg-blue-950 border-blue-900 text-white min-w-[150px]">
+           <DropdownMenuItem onClick={() => editor.chain().focus().setParagraph().run()}>
+             Normal Text
+           </DropdownMenuItem>
+           <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}>
+             <Heading1 className="w-4 h-4 mr-2" /> Title (H1)
+           </DropdownMenuItem>
+           <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}>
+             <Heading2 className="w-4 h-4 mr-2" /> Heading 1 (H2)
+           </DropdownMenuItem>
+           <DropdownMenuItem onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}>
+             <Heading3 className="w-4 h-4 mr-2" /> Heading 2 (H3)
+           </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <Separator />
+
+      {/* Formatting */}
+      <div className="flex items-center gap-0.5">
+        <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleBold().run();
           }}
-          className={
-            editor.isActive("bold")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("bold")}
+          title="Bold"
         >
-          <Bold className="w-5 h-5" />
-        </button>
-        <button
+          <Bold className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleItalic().run();
           }}
-          className={
-            editor.isActive("italic")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("italic")}
+          title="Italic"
         >
-          <Italic className="w-5 h-5" />
-        </button>
-        <button
+          <Italic className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleUnderline().run();
           }}
-          className={
-            editor.isActive("underline")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("underline")}
+          title="Underline"
         >
-          <Underline className="w-5 h-5" />
-        </button>
-        <button
+          <Underline className="w-4 h-4" />
+        </ToolbarButton>
+         <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleStrike().run();
           }}
-          className={
-            editor.isActive("strike")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("strike")}
+          title="Strikethrough"
         >
-          <Strikethrough className="w-5 h-5" />
-        </button>
-        <button
+          <Strikethrough className="w-4 h-4" />
+        </ToolbarButton>
+         <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
-            editor.chain().focus().toggleHeading({ level: 2 }).run();
+            editor.chain().focus().toggleCode().run();
           }}
-          className={
-            editor.isActive("heading", { level: 2 })
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("code")}
+          title="Inline Code"
         >
-          <Heading2 className="w-5 h-5" />
-        </button>
+          <Code className="w-4 h-4" />
+        </ToolbarButton>
+      </div>
 
-        <button
+       <Separator />
+      
+      {/* Alignment */}
+      <div className="flex items-center gap-0.5">
+          <ToolbarButton
+              onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('left').run(); }}
+              isActive={editor.isActive({ textAlign: 'left' })}
+              title="Align Left"
+          >
+              <AlignLeft className="w-4 h-4" />
+          </ToolbarButton>
+           <ToolbarButton
+              onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('center').run(); }}
+              isActive={editor.isActive({ textAlign: 'center' })}
+              title="Align Center"
+          >
+              <AlignCenter className="w-4 h-4" />
+          </ToolbarButton>
+           <ToolbarButton
+              onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('right').run(); }}
+              isActive={editor.isActive({ textAlign: 'right' })}
+              title="Align Right"
+          >
+              <AlignRight className="w-4 h-4" />
+          </ToolbarButton>
+           <ToolbarButton
+              onClick={(e) => { e.preventDefault(); editor.chain().focus().setTextAlign('justify').run(); }}
+              isActive={editor.isActive({ textAlign: 'justify' })}
+              title="Justify"
+          >
+              <AlignJustify className="w-4 h-4" />
+          </ToolbarButton>
+      </div>
+
+       <Separator />
+
+      {/* Lists */}
+      <div className="flex items-center gap-0.5">
+         <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleBulletList().run();
           }}
-          className={
-            editor.isActive("bulletList")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("bulletList")}
+          title="Bullet List"
         >
-          <List className="w-5 h-5" />
-        </button>
-        <button
+          <List className="w-4 h-4" />
+        </ToolbarButton>
+        <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleOrderedList().run();
           }}
-          className={
-            editor.isActive("orderedList")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("orderedList")}
+          title="Numbered List"
         >
-          <ListOrdered className="w-5 h-5" />
-        </button>
-        <button
+          <ListOrdered className="w-4 h-4" />
+        </ToolbarButton>
+      </div>
+      
+      <Separator />
+
+      {/* Inserts */}
+      <div className="flex items-center gap-0.5">
+         <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleBlockquote().run();
           }}
-          className={
-            editor.isActive("blockquote")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
+          isActive={editor.isActive("blockquote")}
+          title="Quote"
         >
-          <Quote className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().setCode().run();
-          }}
-          className={
-            editor.isActive("code")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400"
-          }
-        >
-          <Code className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().undo().run();
-          }}
-          className={
-            editor.isActive("undo")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400 hover:bg-sky-700 hover:text-white p-1 hover:rounded-lg"
-          }
-        >
-          <Undo className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            editor.chain().focus().redo().run();
-          }}
-          className={
-            editor.isActive("redo")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400 hover:bg-sky-700 hover:text-white p-1 hover:rounded-lg"
-          }
-        >
-          <Redo className="w-5 h-5" />
-        </button>
-        <button
-          onClick={(e) => {
-            e.preventDefault();
-            openLinkDialog();
-          }}
-          className="text-sky-400"
-        >
-          <Link className="w-5 h-5" />
-        </button>
-        <button
+          <Quote className="w-4 h-4" />
+        </ToolbarButton>
+        
+        <ToolbarButton
           onClick={(e) => {
             e.preventDefault();
             editor.chain().focus().toggleCodeBlock().run();
           }}
-          className={
-            editor.isActive("codeBlock")
-              ? "bg-sky-700 text-white p-2 rounded-lg"
-              : "text-sky-400 hover:bg-sky-700 hover:text-white p-1 hover:rounded-lg"
-          }
+          isActive={editor.isActive("codeBlock")}
+          title="Code Block"
         >
-          <Braces className="w-5 h-5" />
-        </button>
+          <Braces className="w-4 h-4" />
+        </ToolbarButton>
+
+         <ToolbarButton
+          onClick={(e) => {
+            e.preventDefault();
+            editor.chain().focus().setHorizontalRule().run();
+          }}
+          title="Horizontal Rule"
+        >
+          <Minus className="w-4 h-4" />
+        </ToolbarButton>
+
+        <ToolbarButton
+          onClick={(e) => {
+            e.preventDefault();
+            openLinkDialog();
+          }}
+          isActive={editor.isActive("link")}
+          title="Link"
+        >
+          <Link className="w-4 h-4" />
+        </ToolbarButton>
+
         <input
           type="file"
           accept="image/*"
@@ -281,97 +368,44 @@ const Toolbar = ({ editor, content}: Props) => {
           className="hidden"
           id="image-upload"
         />
-        <label htmlFor="image-upload" className="text-sky-400 cursor-pointer">
-          <ImageIcon className="w-5 h-5" />
+        <label htmlFor="image-upload" className="p-1.5 rounded-md text-slate-400 hover:bg-blue-800 hover:text-white cursor-pointer" title="Insert Image">
+          <ImageIcon className="w-4 h-4" />
         </label>
-        <button
-          className="text-white"
-          onClick={(e) => {
-            e.preventDefault();
-            editor
-              .chain()
-              .focus()
-              .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-              .run();
-          }}
-        >
-          <Grid3x3 className="text-sky-400" />
-        </button>
-        {isTableActive && (
-          <>
-            <button
-              className="text-white"
-              onClick={(e) => {
-          e.preventDefault();
-          editor.chain().focus().addColumnBefore().run();
-              }}
-            >
-              <BetweenHorizontalStart className="text-sky-100" />
-            </button>
-
-            <button
-              className="text-white"
-              onClick={(e) => {
-          e.preventDefault();
-          editor.chain().focus().deleteColumn().run();
-              }}
-            >
-              <TableColumnsSplit className="text-sky-100" />
-            </button>
-            <button
-              className="text-white"
-              onClick={(e) => {
-          e.preventDefault();
-          editor.chain().focus().addRowBefore().run();
-              }}
-            >
-              <BetweenVerticalStart className="text-sky-100" />
-            </button>
-            <button
-              className="text-white"
-              onClick={(e) => {
-          e.preventDefault();
-          editor.chain().focus().deleteRow().run();
-              }}
-            >
-              <TableRowsSplit className="text-sky-100" />
-            </button>
-            <button
-              className="text-white"
-              onClick={(e) => {
-          e.preventDefault();
-          editor.chain().focus().deleteTable().run();
-              }}
-            >
-              <Grid2x2X className="text-sky-100" />
-            </button>
-
-            <button
-              className="text-white"
-              onClick={(e) => {
-          e.preventDefault();
-          editor.chain().focus().setCellAttribute("colspan", 2).run();
-              }}
-            >
-              <TbTableExport className="text-sky-100 w-6 h-6" />
-            </button>
-          </>
-        )}
-        <LinkDialog
-          isOpen={isDialogOpen}
-          onClose={() => setIsDialogOpen(false)}
-          onSubmit={setLink}
-          previousUrl={previousUrl}
-        />
+        
+        {/* Table Dropdown */}
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                 <button className={`p-1.5 rounded-md transition-colors ${
+                    isTableActive ? "bg-blue-600 text-white" : "text-slate-400 hover:bg-blue-800 hover:text-white"
+                 }`} title="Table">
+                    <Grid3x3 className="w-4 h-4" />
+                </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-blue-950 border-blue-900 text-white">
+                <DropdownMenuItem onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+                    Insert 3x3 Table
+                </DropdownMenuItem>
+                {isTableActive && (
+                    <>
+                        <DropdownMenuItem onClick={() => editor.chain().focus().addColumnBefore().run()}>Add Column Before</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editor.chain().focus().addColumnAfter().run()}>Add Column After</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editor.chain().focus().deleteColumn().run()}>Delete Column</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editor.chain().focus().addRowBefore().run()}>Add Row Before</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editor.chain().focus().addRowAfter().run()}>Add Row After</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editor.chain().focus().deleteRow().run()}>Delete Row</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => editor.chain().focus().deleteTable().run()}>Delete Table</DropdownMenuItem>
+                    </>
+                )}
+            </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-      {content && (
-        <button
-          type="submit"
-          className="px-4 bg-sky-700 text-white py-2 rounded-md"
-        >
-          Publish
-        </button>
-      )}
+
+       <LinkDialog
+        isOpen={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        onSubmit={setLink}
+        previousUrl={previousUrl}
+      />
     </div>
   );
 };
