@@ -9,7 +9,7 @@ interface Note {
   id: string;
   subject: string;
   content: string;
-  recipientsCount: number;
+  totalRecipients: number;
   createdAt: Date;
   updatedAt: Date;
 }
