@@ -76,6 +76,15 @@
 }
 
 /* Custom scrollbar for WebKit browsers (Chrome, Safari) */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 /* Editor Base Styles */
 .tiptap-editor {
   background-color: #171e42;
