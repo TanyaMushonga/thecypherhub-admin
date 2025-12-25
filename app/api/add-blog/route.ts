@@ -3,7 +3,7 @@ import prisma from "../../../lib/prisma";
 import { calculateReadTime } from "../../../lib/utils";
 import { validateRequest } from "@/auth";
 import { put } from "@vercel/blob";
-import { client } from "@/trigger";
+
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -65,21 +65,7 @@ export async function POST(req: Request) {
       data,
     });
 
-    // Trigger notification job
-    try {
-        await client.sendEvent({
-            name: "notify.new.article",
-            payload: {
-                title,
-                content: content!,
-                slug,
-                description,
-            },
-        });
-    } catch (e) {
-        console.error("Failed to trigger notification job", e);
-        // Don't fail the request, just log
-    }
+
 
     revalidatePath("/blog");
     revalidatePath(`/blog/${slug}`);
