@@ -15,20 +15,11 @@ import TableRow from "@tiptap/extension-table-row";
 import Gapcursor from "@tiptap/extension-gapcursor";
 import TextAlign from "@tiptap/extension-text-align";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-import css from "highlight.js/lib/languages/css";
-import js from "highlight.js/lib/languages/javascript";
-import ts from "highlight.js/lib/languages/typescript";
-import html from "highlight.js/lib/languages/xml";
 // load all languages with "all" or common languages with "common"
-import { all, createLowlight } from "lowlight";
+import { common, createLowlight } from "lowlight";
 import { useEffect } from "react";
 
-const lowlight = createLowlight(all);
-
-lowlight.register("html", html);
-lowlight.register("css", css);
-lowlight.register("js", js);
-lowlight.register("ts", ts);
+const lowlight = createLowlight(common);
 
 interface TiptapProps {
   onChange: (newContent: string) => void;

@@ -67,9 +67,10 @@ model subscribers {
 }
 
 model verificationTokens {
-  id    String @id @default(uuid()) @map("_id")
-  email String @unique
-  token String @unique
+  id        String   @id @default(uuid()) @map("_id")
+  email     String   @unique
+  token     String   @unique
+  expiresAt DateTime?
 }
 
 model notes {
