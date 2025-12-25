@@ -1,3 +1,4 @@
+import { extractNameFromEmail } from "@/lib/utils";
 import {
   Body,
   Container,
@@ -38,10 +39,11 @@ export const NotificationEmail = ({
               New Article Published
             </Heading>
             <Text style={paragraph}>
-              Hello,
+              Hie, {extractNameFromEmail(email)} its Tanya here!
             </Text>
+            
             <Text style={paragraph}>
-              We just published a new article that might interest you:
+              I just published a new article that might interest you:
             </Text>
             
             <Section style={articleCard}>

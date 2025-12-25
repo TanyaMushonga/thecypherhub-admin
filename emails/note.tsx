@@ -50,12 +50,9 @@ export const NoteEmail = ({ htmlContent, email }: NoteEmailProps) => (
 
         <Section style={content}>
           <Heading as="h2" style={title}>
-            Hie {extractNameFromEmail(email)}!
+            Hie {extractNameFromEmail(email)} its Tanya here!
           </Heading>
-          <Text style={paragraph}>
-            It&apos;s me again, Tanya Mushonga! I bring you another exciting
-            edition of my tech blog,
-          </Text>
+         
 
           <Section style={paragraph}>{parse(htmlContent)}</Section>
 
