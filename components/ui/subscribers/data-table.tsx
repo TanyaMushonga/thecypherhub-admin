@@ -72,11 +72,11 @@ export function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm bg-blue-900/50 border-blue-800 text-white placeholder:text-slate-400 focus-visible:ring-offset-0 focus-visible:ring-blue-500"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline" className="ml-auto bg-transparent border-blue-800 text-slate-300 hover:bg-blue-900 hover:text-white">
               Columns
             </Button>
           </DropdownMenuTrigger>
@@ -101,9 +101,9 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="rounded-md">
-        <Table className="bg-blue-950">
-          <TableHeader className="">
+      <div className="rounded-md border border-blue-800">
+        <Table className="bg-transparent">
+          <TableHeader className="bg-blue-900/50 hover:bg-blue-900/50">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
@@ -127,7 +127,7 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="text-slate-200 hover:bg-blue-900"
+                  className="text-slate-200 hover:bg-blue-900/40 border-b border-blue-800/50"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -154,8 +154,8 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
-          variant="outline"
-          size="sm"
+          
+          className="bg-transparent border-blue-800 text-slate-300 hover:bg-blue-900 hover:text-white disabled:opacity-50"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -164,6 +164,7 @@ export function DataTable<TData, TValue>({
         <Button
           variant="outline"
           size="sm"
+          className="bg-transparent border-blue-800 text-slate-300 hover:bg-blue-900 hover:text-white disabled:opacity-50"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
