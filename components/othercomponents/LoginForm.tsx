@@ -69,6 +69,11 @@ function LoginForm() {
             </FormItem>
           )}
         />
+        <div className="flex justify-end">
+             <a href="/forgot-password" className="text-sm text-primary hover:underline">
+               Forgot password?
+             </a>
+        </div>
         <LoadingButton loading={isPending} type="submit" className="w-full">
           Log in
         </LoadingButton>
