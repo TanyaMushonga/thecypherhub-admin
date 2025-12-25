@@ -11,6 +11,14 @@ declare interface Article {
   authorId: string;
   createdAt: string;
   updateAt: string;
+  comments: Comment[];
+}
+
+declare interface Comment {
+  id: string;
+  articleId: string;
+  comment: string;
+  createdAt: string;
 }
 
 declare interface Subscribers {
@@ -23,4 +31,14 @@ declare interface Subscribers {
 declare interface ArticleStore {
   blog: Article[];
   setBlog: (blog: Article[]) => void;
+}
+
+declare interface ArticleFormData {
+  title: string;
+  slug: string;
+  description: string;
+  category: string;
+  content: string;
+  keywords: string[];
+  coverImgUrl?: string; // Optional for form data as it might be a File or url string handled separately
 }
