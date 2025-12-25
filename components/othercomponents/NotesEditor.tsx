@@ -50,61 +50,69 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
 
         const editorContent = editor.getHTML();
         
-        let noteId = "";
-
-        // Only create a database record if it's NOT a test email
-        if (!isTest) {
-            // 1. Create Note (get ID)
-            const noteResponse = await fetch("/api/send-note", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    subject, 
-                    content: editorContent,
-                }),
-            });
-
-            const noteData = await noteResponse.json();
-
-            if (!noteResponse.ok) {
-                throw new Error(noteData.error || "Failed to create note");
-            }
-            noteId = noteData.noteId;
-        }
-
         if (isTest) {
              // Test mode: Send batch of 1 immediately, no noteId needed
             await sendBatch([testEmail], subject, editorContent, "", "note");
             toast.success("Test note sent!");
         } else {
-             // Production mode: Fetch subscribers and batch send
+             // Production mode: Fetch subscribers FIRST
             setStatus("Fetching subscribers...");
             const subResponse = await fetch("/api/subscribers");
             const subData = await subResponse.json();
             
             if (!subResponse.ok) throw new Error(subData.error || "Failed to fetch subscribers");
             
-            const subscribers: string[] = subData.emails;
+            // Fix: Handle the API response structure (Array of objects)
+            const subscribersList = Array.isArray(subData) ? subData : [];
+            const subscribers: string[] = subscribersList
+                .filter((sub: any) => sub.status === 1) // Only active subscribers? Assuming 1 is active based on API code
+                .map((sub: any) => sub.email);
+
+            if (subscribers.length === 0) {
+                toast.error("No active subscribers found");
+                setIsSending(false);
+                setStatus("");
+                return;
+            }
+
             const total = subscribers.length;
             const batchSize = 5;
             let sentCount = 0;
 
+            // Send emails FIRST
             for (let i = 0; i < total; i += batchSize) {
                 const batch = subscribers.slice(i, i + batchSize);
                 
                 setStatus(`Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total}) with 5 recipients`);
                 
-                // Pass the real noteId for tracking stats
-                await sendBatch(batch, subject, editorContent, noteId, "note");
+                // Pass empty noteId so we don't try to update a non-existent DB record checks
+                await sendBatch(batch, subject, editorContent, "", "note");
                 sentCount += batch.length;
             }
-             toast.success(`Sent to ${total} subscribers!`);
-        }
 
-        if (!isTest) {
-            setSubject("");
-            editor.commands.clearContent();
-            onNoteSent();
+            // Create Note in DB AFTER successful sending
+            setStatus("Saving note to database...");
+            const noteResponse = await fetch("/api/send-note", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    subject, 
+                    content: editorContent,
+                    status: "Sent",
+                    totalRecipients: total
+                }),
+            });
+
+            if (!noteResponse.ok) {
+                // If saving fails, we should still let the user know emails were sent
+                 console.error("Emails sent but failed to save note record");
+                 toast.error("Emails sent, but failed to save to history.");
+            } else {
+                 toast.success(`Sent to ${total} subscribers!`);
+                 setSubject("");
+                 editor.commands.clearContent();
+                 onNoteSent();
+            }
         }
     } catch (error: any) {
         console.error(error);
