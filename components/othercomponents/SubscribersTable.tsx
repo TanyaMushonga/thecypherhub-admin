@@ -8,7 +8,8 @@ function SubscribersTable() {
   const { subscribers } = useFetchSubscribers();
 
   return (
-    <div className="p-5 md:p-10 w-full bg-primary">
+    <div className="p-5 md:p-10 w-full bg-blue-950 min-h-screen">
+      <h2 className="text-2xl font-bold text-white mb-6">Subscribers</h2>
       <DataTable columns={columns} data={subscribers} />
     </div>
   );
