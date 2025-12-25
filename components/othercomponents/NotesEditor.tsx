@@ -20,6 +20,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: "",
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class:
@@ -59,9 +60,16 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
             }),
         });
 
-        if (!response.ok) {
-            const errorData = await response.text();
-            throw new Error(errorData || "Failed to send note");
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+             const data = await response.json();
+             if (!response.ok) {
+                 throw new Error(data.error || "Failed to send note");
+             }
+        } else {
+             const text = await response.text();
+             console.error("Non-JSON API response:", text);
+             throw new Error("Server returned an unexpected error. Check console for details.");
         }
 
         toast.success(isTest ? "Test note sent!" : "Note sent successfully to subscribers!");
