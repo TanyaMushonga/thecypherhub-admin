@@ -31,7 +31,7 @@ export default async function Layout({
           <SidebarTrigger className="text-white" />
           <div className="flex flex-col gap-4 md:flex-row justify-between items-center md:mx-10 w-full">
             <h1 className="text-center text-xl md:text-3xl text-white font-bold">
-              The Dev Cycle Newsletter
+              The Cypher Hub Dashboard
             </h1>
             <Link
               href="/add-article"
