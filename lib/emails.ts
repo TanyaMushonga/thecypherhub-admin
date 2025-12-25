@@ -2,6 +2,7 @@ import NoteEmail from "@/emails/note";
 import { Resend } from "resend";
 import { extractNameFromEmail } from "./utils";
 import CommentNotificationEmail from "@/emails/notification";
+import NotificationEmail from "@/emails/new-article";
 
 const resend = new Resend(process.env.RESEND_API_KEY!);
 
@@ -253,3 +254,62 @@ export const sendCommentNotification = async (
     throw new Error("Error sending comment notification");
   }
 };
+
+export const sendNoteBatch = async (
+  recipients: string[],
+  subject: string,
+  content: string
+) => {
+  try {
+    const batchData = recipients.map((email) => ({
+      from: "Tanyaradzwa T Mushonga <newsletter@thecypherhub.tech>",
+      to: email,
+      subject: subject,
+      react: NoteEmail({ htmlContent: content, email }),
+    }));
+
+    // Resend's batch API allows up to 100 emails. We'll stick to 5-10 per client request for safety.
+    const { data, error } = await resend.batch.send(batchData);
+
+    if (error) {
+      console.error("Error sending note batch:", error);
+      throw new Error("Error sending note batch: " + error.message);
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Error sending note batch:", error);
+    throw new Error(error.message || "Error sending note batch");
+  }
+};
+
+export const sendArticleNotificationBatch = async (
+    recipients: string[],
+    article: { title: string; description: string; slug: string; content: string }
+  ) => {
+    try {
+      const batchData = recipients.map((email) => ({
+        from: "Tanyaradzwa T Mushonga <newsletter@thecypherhub.tech>",
+        to: email,
+        subject: `New: ${article.title}`,
+        react: NotificationEmail({ 
+            articleTitle: article.title,
+            articleDescription: article.description,
+            articleSlug: article.slug,
+            email 
+        }),
+      }));
+  
+      const { data, error } = await resend.batch.send(batchData);
+  
+      if (error) {
+        console.error("Error sending article notification batch:", error);
+        throw new Error("Error sending article notification batch: " + error.message);
+      }
+  
+      return data;
+    } catch (error: any) {
+      console.error("Error sending article notification batch:", error);
+      throw new Error(error.message || "Error sending article notification batch");
+    }
+  };
