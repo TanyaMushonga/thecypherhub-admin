@@ -38,6 +38,7 @@
     "@tiptap/extension-underline": "^2.10.4",
     "@tiptap/react": "^2.10.4",
     "@tiptap/starter-kit": "^2.10.4",
+    "@trigger.dev/sdk": "^4.3.1",
     "@vercel/blob": "^0.27.1",
     "axios": "^1.7.9",
     "browser-image-resizer": "^2.4.1",
