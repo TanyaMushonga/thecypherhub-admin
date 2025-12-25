@@ -17,11 +17,12 @@ export async function POST(req: Request) {
         }
         await sendNoteBatch(recipients, subject, content);
         
-        // Update metrics if noteId provided
-        if (noteId) {
+        // Only update stats if we have a valid noteId (i.e., not a test email)
+        if (noteId && typeof noteId === 'string' && noteId.length > 0) {
             await prisma.notes.update({
                 where: { id: noteId },
                 data: {
+                    status: "Sent",
                     totalRecipients: {
                         increment: recipients.length
                     }
