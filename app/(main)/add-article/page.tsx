@@ -21,16 +21,82 @@ function AddArticlePage() {
       formData.append("coverImgUrl", coverImage);
     }
 
+
     const response = await fetch("/api/add-blog", {
       method: "POST",
       body: formData,
     });
 
     if (!response.ok) {
-      throw new Error(await response.text());
+      let errorMessage = "Failed to create article";
+      try {
+        const errorData = await response.json();
+        if (
+          errorData.error &&
+          errorData.error.code === "P2002" &&
+          errorData.error.meta?.target?.includes("slug")
+        ) {
+          errorMessage = "An article with this slug already exists. Please choose a different slug.";
+        } else if (errorData.message) {
+            errorMessage = errorData.message;
+        } else if (typeof errorData.error === 'string') {
+             errorMessage = errorData.error;
+        }
+      } catch (e) {
+         const textError = await response.text();
+         if (textError) errorMessage = textError;
+      }
+      throw new Error(errorMessage);
+    }
+    
+    // Success: Ask to send notifications
+    toast.success("Blog created successfully!");
+    
+    if (window.confirm("Do you want to send an email notification to all subscribers?")) {
+        try {
+            toast.loading("Fetching subscribers...", { id: "sending" });
+            const subResponse = await fetch("/api/subscribers");
+            const subData = await subResponse.json();
+            
+            if (!subResponse.ok) throw new Error(subData.error || "Failed to fetch subscribers");
+            
+            const subscribers: string[] = subData.emails;
+            const total = subscribers.length;
+            const batchSize = 5;
+            let sentCount = 0;
+            
+            const articleDetails = {
+                title: data.title,
+                description: data.description,
+                slug: data.slug,
+                content: data.content
+            };
+
+            for (let i = 0; i < total; i += batchSize) {
+                const batch = subscribers.slice(i, i + batchSize);
+                
+                toast.loading(`Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total})`, { id: "sending" });
+                
+                // Call send-batch with article details
+                 await fetch("/api/send-batch", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        recipients: batch,
+                        type: "article",
+                        article: articleDetails
+                    }),
+                });
+
+                sentCount += batch.length;
+            }
+            toast.success(`Notifications sent to ${total} subscribers!`, { id: "sending" });
+        } catch (emailError: any) {
+            console.error(emailError);
+            toast.error("Failed to send notifications: " + emailError.message, { id: "sending" });
+        }
     }
 
-     toast.success("Blog created successfully");
      router.push("/articles");
   };
 
