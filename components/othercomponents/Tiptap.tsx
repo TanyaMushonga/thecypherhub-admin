@@ -7,7 +7,7 @@ import Document from "@tiptap/extension-document";
 import Link from "@tiptap/extension-link";
 import Paragraph from "@tiptap/extension-paragraph";
 import Text from "@tiptap/extension-text";
-import Image from "@tiptap/extension-image";
+import ImageResize from "tiptap-extension-resize-image";
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
@@ -70,7 +70,7 @@ const Tiptap = ({
       TableRow,
       TableHeader,
       TableCell,
-      Image.configure({ inline: true, allowBase64: true }),
+      ImageResize.configure({ inline: true, allowBase64: true }),
       CodeBlockLowlight.configure({
         lowlight,
       }),
@@ -150,7 +150,7 @@ const Tiptap = ({
     editorProps: {
       attributes: {
         class:
-          "min-h-[800px] w-full max-w-[816px] mx-auto bg-blue-950 p-12 shadow-lg focus:outline-none prose prose-invert prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl",
+          "min-h-[800px] w-full max-w-5xl mx-auto bg-blue-950 p-12 shadow-lg focus:outline-none prose prose-invert prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl",
       },
     },
     onUpdate: ({ editor }) => {
