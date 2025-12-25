@@ -1,5 +1,3 @@
-/* Tiptap.css */
-
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Toolbar from "./Toolbar";
@@ -15,7 +13,7 @@ import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import Gapcursor from "@tiptap/extension-gapcursor";
-
+import TextAlign from "@tiptap/extension-text-align";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import css from "highlight.js/lib/languages/css";
 import js from "highlight.js/lib/languages/javascript";
@@ -51,13 +49,20 @@ const Tiptap = ({
   const editor = useEditor({
     immediatelyRender,
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+         heading: {
+             levels: [1, 2, 3, 4, 5, 6],
+         }
+      }),
       Underline,
       Document,
       Paragraph,
       Text,
       Code,
       Gapcursor,
+      TextAlign.configure({
+        types: ["heading", "paragraph"],
+      }),
       Table.configure({
         resizable: true,
       }),
@@ -145,7 +150,7 @@ const Tiptap = ({
     editorProps: {
       attributes: {
         class:
-          "tiptap-editor flex flex-col px-4 py-3 justify-start border-b border-r border-l border-gray-700 text-gray-400 items-start w-full gap-3 font-medium text-[16px] pt-4 rounded-bl-md rounded-br-md outline-none h-[80vh] overflow-y-auto",
+          "min-h-[800px] w-full max-w-[816px] mx-auto bg-blue-950 p-12 shadow-lg focus:outline-none prose prose-invert prose-headings:font-bold prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl",
       },
     },
     onUpdate: ({ editor }) => {
@@ -171,9 +176,18 @@ const Tiptap = ({
   };
 
   return (
-    <div className="w-full px-4">
-      <Toolbar editor={editor} content={content} />
-      <EditorContent style={{ whiteSpace: "pre-line" }} editor={editor} />
+    <div className="flex flex-col h-full bg-slate-900 rounded-lg overflow-hidden border border-blue-900/50">
+      {/* Sticky Toolbar */}
+      <div className="sticky top-0 z-10 bg-blue-950/95 backdrop-blur-sm border-b border-blue-900/50">
+        <Toolbar editor={editor} content={content} />
+      </div>
+
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto bg-slate-900/50 p-8 custom-scrollbar relative">
+        <div className="min-h-full flex justify-center items-start">
+             <EditorContent editor={editor} className="w-full flex justify-center" />
+        </div>
+      </div>
     </div>
   );
 };
