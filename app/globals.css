@@ -321,129 +321,405 @@
     border-radius: 0 0 0.5rem 0.5rem !important;
   }
 }
-
-.p.prose {
-  white-space: pre-line;
-  font-size: 1.125rem;
-  line-height: 1.75;
+/* -------------------------------
+   PROSE / BLOG TYPOGRAPHY (rest of your CSS remains unchanged)
+-------------------------------- */
+.prose {
+  max-width: 100%;
+  line-height: 1.25;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
+/* ... rest of your CSS code remains exactly as it was ... */
+
+/* Prevent any child from overflowing */
+.prose > * {
+  max-width: 100%;
+}
+
+/* Images */
+.prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  margin: 1.5rem 0;
+}
+
+/* Headings */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: #f8fafc;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose h1 {
+  font-size: 2.1rem;
+}
+
+.prose h2 {
+  font-size: 1.6rem;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 0.35rem;
+}
+
+.prose h3 {
+  font-size: 1.35rem;
+}
+
+/* Paragraphs */
+.prose p {
+  color: #cbd5e1;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  margin-bottom: 1.1rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+
+.prose strong {
+  color: #ffffff;
+  font-weight: 600;
+  word-break: break-word;
+}
+
+/* Links */
+.prose a {
+  color: #60a5fa;
+  text-decoration: none;
+  border-bottom: 1px dashed #60a5fa;
+  transition: all 0.2s ease;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose a:hover {
+  color: #93c5fd;
+  border-bottom-style: solid;
+}
+
+/* Lists */
+.prose ul,
+.prose ol {
+  color: #cbd5e1;
+  font-size: 1.05rem;
+  padding-left: 1.75rem;
+  margin-bottom: 1.2rem;
+  line-height: 1.2;
+  max-width: 100%;
+  text-align: justify;
+}
+
+.prose li {
+  margin-bottom: 0.35rem;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  text-align: justify;
+}
+
+/* Make list bullets/numbers visible and match text color */
+.prose li::marker {
+  color: #cbd5e1;
+  opacity: 1;
+}
+
+/* Ensure list markers are visible */
 .prose ul {
   list-style-type: disc;
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.125rem;
-  line-height: 1.75;
+  list-style-position: outside;
 }
 
 .prose ol {
   list-style-type: decimal;
-  padding-left: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.125rem;
-  line-height: 1.75;
 }
 
-.prose li {
-  margin-bottom: 0.5rem;
-  font-size: 1.125rem;
-  line-height: 1.75;
-}
-
-.prose p {
-  margin-bottom: 1rem;
-  font-size: 1.125rem;
-  line-height: 1.75;
-}
-
-.prose h3,
-.prose h4 {
-  margin-top: 1.5rem;
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-  line-height: 1.75;
-}
-
-.prose strong {
-  font-weight: bold;
-  font-size: 1.125rem;
-  line-height: 1.75;
-}
-
-.prose a {
-  text-decoration: underline;
-  font-size: 1.125rem;
-  line-height: 1.75;
-}
+/* -------------------------------
+   CODE BLOCKS (EDITOR STYLE)
+-------------------------------- */
 
 .prose pre {
-  background-color: rgb(2, 14, 53);
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgb(28, 23, 97);
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  position: relative;
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 0.75rem;
+  margin: 1.75rem 0;
+  padding: 0;
+  overflow: hidden;
+  max-width: 100%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+/* Header bar */
+.prose pre::before {
+  content: attr(data-title, "");
+  padding-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2.5rem;
+  padding: 0 1rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #94a3b8;
+  background: linear-gradient(to bottom, #020617, #020617);
+  border-bottom: 1px solid #1e293b;
+}
+
+/* Traffic lights */
+.prose pre::after {
+  content: "";
+  position: absolute;
+  top: 0.9rem;
+  left: 1rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #ef4444;
+  box-shadow: 1.1rem 0 0 #eab308, 2.2rem 0 0 #22c55e;
+}
+
+/* Code container */
+.prose pre code {
+  display: block;
+  padding: 1.25rem;
+  margin-top: 0;
+  background: transparent !important;
+  color: #e5e7eb;
+  font-family: "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  font-size: 0.9rem;
+  line-height: 1.6;
   overflow-x: auto;
-  font-size: 1rem;
-  line-height: 1.5;
-  margin-bottom: 1.5rem;
-  color: #449e34;
+  white-space: pre;
+  word-wrap: normal;
+  word-break: normal;
   max-width: 100%;
+}
+
+/* Scrollbar styling for code blocks */
+.prose pre code::-webkit-scrollbar {
+  height: 8px;
+}
+
+.prose pre code::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 4px;
+}
+
+.prose pre code::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.prose pre code::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Remove Tailwind span issues from syntax highlighters */
+.prose pre span {
+  background: transparent !important;
+}
+
+/* Inline code */
+.prose p code,
+.prose li code {
+  background: #020617;
+  color: #7dd3fc;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.35rem;
+  border: 1px solid #1e293b;
+  font-size: 0.85em;
+  word-break: break-all;
+  overflow-wrap: break-word;
+}
+
+/* -------------------------------
+   BLOCKQUOTES
+-------------------------------- */
+
+.prose blockquote {
+  border-left: 3px solid #3b82f6;
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0;
+  font-style: italic;
+  color: #94a3b8;
+  background: rgba(59, 130, 246, 0.08);
+  border-radius: 0 0.5rem 0.5rem 0;
   word-wrap: break-word;
   overflow-wrap: break-word;
-  white-space: pre-wrap;
-  /* Ensure long lines break and wrap */
-}
-
-.prose code {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: #449e34;
   max-width: 100%;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: pre-wrap;
-  /* Ensure long lines break and wrap */
+  text-align: justify;
 }
 
-/* Media query for smaller screens */
-@media (max-width: 600px) {
-  .prose pre {
-    font-size: 0.875rem;
-    /* Adjust font size for smaller screens */
-    padding: 0.5rem;
-    /* Adjust padding for smaller screens */
-  }
-
-  .prose code {
-    font-size: 0.75rem;
-    /* Adjust font size for smaller screens */
-    padding: 0.25rem;
-    /* Adjust padding for smaller screens */
-  }
-}
+/* -------------------------------
+   TABLES
+-------------------------------- */
 
 .prose table {
   width: 100%;
   border-collapse: collapse;
-  margin-bottom: 1.5rem;
-  font-size: 1.125rem;
-  line-height: 1.75;
-  background-color: rgb(18, 27, 66);
-  color: rgb(255, 255, 255);
+  margin-bottom: 1.75rem;
+  color: #cbd5e1;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
 }
 
-.prose th,
-.prose td {
-  border: 1px solid rgb(28, 23, 97);
-  padding: 0.5rem 0.6rem;
-  text-align: left;
+/* Scrollbar for tables */
+.prose table::-webkit-scrollbar {
+  height: 8px;
+}
+
+.prose table::-webkit-scrollbar-track {
+  background: #0f172a;
+  border-radius: 4px;
+}
+
+.prose table::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+
+.prose table::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+.prose thead,
+.prose tbody,
+.prose tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
 .prose th {
-  background-color: rgb(4, 4, 22);
-  color: white;
-  font-weight: bold;
+  background-color: #1e293b;
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #334155;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+.prose td {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #334155;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+/* -------------------------------
+   LARGE SCREENS
+-------------------------------- */
+
+@media (min-width: 1024px) {
+  .prose {
+    font-size: 1.05rem;
+  }
+}
+
+/* -------------------------------
+   RESPONSIVE ADJUSTMENTS
+-------------------------------- */
+
+@media (max-width: 768px) {
+  .prose h1 {
+    font-size: 1.75rem;
+  }
+
+  .prose h2 {
+    font-size: 1.4rem;
+  }
+
+  .prose h3 {
+    font-size: 1.2rem;
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.95rem;
+  }
+
+  .prose pre {
+    margin: 1.25rem -0.5rem;
+    border-radius: 0.5rem;
+  }
+
+  .prose pre code {
+    font-size: 0.8rem;
+    padding: 1rem;
+  }
+
+  .prose table {
+    font-size: 0.85rem;
+  }
+
+  .prose th,
+  .prose td {
+    padding: 0.5rem 0.6rem;
+    font-size: 0.85rem;
+  }
+
+  /* Better handling of inline code on mobile */
+  .prose p code,
+  .prose li code {
+    font-size: 0.8em;
+    padding: 0.15rem 0.35rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .prose h1 {
+    font-size: 1.5rem;
+  }
+
+  .prose h2 {
+    font-size: 1.25rem;
+  }
+
+  .prose h3 {
+    font-size: 1.1rem;
+  }
+
+  .prose p,
+  .prose li {
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .prose pre code {
+    font-size: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1rem;
+  }
+
+  .prose table {
+    font-size: 0.8rem;
+  }
+
+  .prose th,
+  .prose td {
+    padding: 0.4rem 0.5rem;
+    font-size: 0.8rem;
+  }
 }
