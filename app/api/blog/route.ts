@@ -8,8 +8,9 @@ export async function GET(request: Request) {
     const url = new URL(request.url);
     const page = parseInt(url.searchParams.get("page") || "1", 10);
     const pageSize = parseInt(url.searchParams.get("page_size") || "10", 10);
+    const search = url.searchParams.get("search") || "";
 
-    const cacheKey = `blogs-${page}-${pageSize}`;
+    const cacheKey = `blogs-${page}-${pageSize}-${search}`;
     const cachedResponse = cache.get(cacheKey);
 
     if (cachedResponse) {
@@ -23,7 +24,18 @@ export async function GET(request: Request) {
 
     const skip = (page - 1) * pageSize;
     const take = pageSize;
+
+    const where = search
+      ? {
+          OR: [
+            { title: { contains: search, mode: "insensitive" as const } },
+            { description: { contains: search, mode: "insensitive" as const } },
+          ],
+        }
+      : {};
+
     const blogs = await prisma.articles.findMany({
+      where,
       orderBy: {
         createdAt: "desc",
       },
@@ -38,7 +50,7 @@ export async function GET(request: Request) {
       take: take,
     });
 
-    const totalCount = await prisma.articles.count();
+    const totalCount = await prisma.articles.count({ where });
 
     const responsePayload = {
       blogs,
