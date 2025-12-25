@@ -205,7 +205,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
          </div>
 
         {/* Sidebar Metadata Section */}
-        <div className="w-full lg:w-96 flex flex-col gap-4 h-full overflow-y-auto custom-scrollbar p-1">
+        <div className="w-full lg:w-[500px] flex flex-col gap-4 h-full overflow-y-auto no-scrollbar p-1">
             <div className="bg-blue-950 p-4 rounded-lg border border-blue-900 space-y-4">
                 <h2 className="text-xl font-semibold text-white mb-4">Article Details</h2>
                 
@@ -346,7 +346,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                             Preview
                             </Button>
                         </SheetTrigger>
-                        <SheetContent className="bg-blue-950 border-l border-blue-900 text-white w-full sm:max-w-xl overflow-y-auto">
+                        <SheetContent className="bg-blue-950 border-l border-blue-900 text-white w-full sm:max-w-4xl overflow-y-auto no-scrollbar">
                             <SheetHeader className="mb-4">
                                 <SheetTitle className="text-white">Article Preview</SheetTitle>
                             </SheetHeader>
