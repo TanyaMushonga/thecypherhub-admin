@@ -5,7 +5,7 @@ import { Mail, Users, Clock } from "lucide-react";
 interface Note {
   id: string;
   subject: string;
-  recipientsCount: number;
+  totalRecipients: number;
   createdAt: Date;
 }
 
@@ -46,7 +46,7 @@ const NotesSidebar: React.FC<NotesSidebarProps> = ({ notes, loading }) => {
               <div className="flex items-center justify-between text-xs text-slate-400">
                 <div className="flex items-center gap-1" title="Recipients">
                   <Users className="w-3 h-3" />
-                  <span>{note.recipientsCount}</span>
+                  <span>{note.totalRecipients}</span>
                 </div>
                 <div className="flex items-center gap-1" title={new Date(note.createdAt).toLocaleString()}>
                   <Clock className="w-3 h-3" />
