@@ -1,17 +1,20 @@
 import ArticleList from "../../../components/othercomponents/articleList";
 import React from "react";
-import { ScrollArea } from "../../../components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default async function Page() {
 
   return (
-    <main className="p-5 md:p-10 h-[90vh] w-full bg-primary">
-      <div className="w-full md:w-2/3 h-full">
-        <h1 className="text-white font-semibold text-lg md:text-2xl mb-5">
-          Published articles
+    <main className="p-5 md:p-10 h-screen w-full bg-primary flex flex-col overflow-hidden">
+      <div className="w-full flex-shrink-0 mb-6">
+        <h1 className="text-white font-semibold text-2xl">
+          Published Articles
         </h1>
-        <ScrollArea className="h-5/6 w-full">
-          <ArticleList  />
+      </div>
+      
+      <div className="flex-1 min-h-0 w-full md:max-w-4xl">
+        <ScrollArea className="h-full w-full pr-4">
+           <ArticleList />
         </ScrollArea>
       </div>
     </main>
