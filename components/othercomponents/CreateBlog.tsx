@@ -37,24 +37,39 @@ const CreateBlog = () => {
   const [clearEditor, setClearEditor] = useState(false);
   const [keywordInput, setKeywordInput] = useState("");
 
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date | null>(null);
+
   const ref = useRef<HTMLInputElement>(null);
 
+  // Load saved content on mount
   useEffect(() => {
     const savedContent = localStorage.getItem("blogContent");
     if (savedContent) {
-      setContent(JSON.parse(savedContent));
+      try {
+        const parsed = JSON.parse(savedContent);
+        setContent(parsed);
+      } catch (e) {
+        console.error("Failed to parse saved draft", e);
+      }
     }
   }, []);
 
+  // Auto-save effect with debounce
   useEffect(() => {
-    const saveContent = () => {
+    // Don't save empty initial state if it matches default
+    if (!content.title && !content.content && !content.slug) return;
+
+    setIsSaving(true);
+    
+    const timeoutId = setTimeout(() => {
       localStorage.setItem("blogContent", JSON.stringify(content));
-    };
-    window.addEventListener("beforeunload", saveContent);
-    return () => {
-      window.removeEventListener("beforeunload", saveContent);
-    };
-  }, [content, blogCover]);
+      setLastSaved(new Date());
+      setIsSaving(false);
+    }, 1000); // 1s debounce
+
+    return () => clearTimeout(timeoutId);
+  }, [content]);
 
   const handleContentChange = (newContent: string) => {
     setContent((prev) => ({ ...prev, content: newContent }));
@@ -178,6 +193,12 @@ const CreateBlog = () => {
     }
   };
 
+  const getSaveStatus = () => {
+    if (isSaving) return "Saving...";
+    if (lastSaved) return `Saved ${lastSaved.toLocaleTimeString()}`;
+    return "";
+  };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -207,6 +228,12 @@ const CreateBlog = () => {
                   setContent((prev) => ({ ...prev, title: e.target.value }))
                 }
               />
+            </div>
+            
+            <div className="flex justify-end mb-2">
+                 <span className="text-xs text-sky-400 font-mono transition-opacity duration-300">
+                    {getSaveStatus()}
+                  </span>
             </div>
 
             <div className="flex flex-col w-full mb-4">
