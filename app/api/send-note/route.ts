@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { subject, content, isTest, testEmail } = body;
+    const { subject, content, isTest, testEmail, status, totalRecipients } = body;
 
     if (!subject || !content) {
       return NextResponse.json({ error: "Missing subject or content" }, { status: 400 });
@@ -16,8 +16,8 @@ export async function POST(req: Request) {
       data: {
         subject,
         content,
-        status: "Draft", // Status will update as frontend processes batches
-        totalRecipients: 0, 
+        status: status || "Draft", 
+        totalRecipients: totalRecipients || 0, 
       },
     });
     console.log(`Note created with ID: ${note.id}`);

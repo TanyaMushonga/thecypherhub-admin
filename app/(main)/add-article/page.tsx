@@ -60,37 +60,50 @@ function AddArticlePage() {
             
             if (!subResponse.ok) throw new Error(subData.error || "Failed to fetch subscribers");
             
-            const subscribers: string[] = subData.emails;
-            const total = subscribers.length;
-            const batchSize = 5;
-            let sentCount = 0;
+            const subscribersList = Array.isArray(subData) ? subData : [];
+            const subscribers: string[] = subscribersList
+                .filter((sub: any) => sub.status === 1)
+                .map((sub: any) => sub.email);
             
-            const articleDetails = {
-                title: data.title,
-                description: data.description,
-                slug: data.slug,
-                content: data.content
-            };
-
-            for (let i = 0; i < total; i += batchSize) {
-                const batch = subscribers.slice(i, i + batchSize);
+            if (subscribers.length === 0) {
+                 toast.error("No active subscribers found", { id: "sending" });
+            } else {
+                const total = subscribers.length;
+                const batchSize = 5;
+                let sentCount = 0;
                 
-                toast.loading(`Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total})`, { id: "sending" });
-                
-                // Call send-batch with article details
-                 await fetch("/api/send-batch", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        recipients: batch,
-                        type: "article",
-                        article: articleDetails
-                    }),
-                });
+                // Truncate content: Strip HTML tags and take 1/3
+                // Simple regex to strip tags (for preview purposes)
+                const strippedContent = data.content.replace(/<[^>]*>?/gm, '');
+                const previewLength = Math.ceil(strippedContent.length / 3);
+                const previewContent = strippedContent.substring(0, previewLength) + "...";
 
-                sentCount += batch.length;
+                const articleDetails = {
+                    title: data.title,
+                    description: previewContent, // Using truncated content as the main description in email
+                    slug: data.slug,
+                };
+
+                for (let i = 0; i < total; i += batchSize) {
+                    const batch = subscribers.slice(i, i + batchSize);
+                    
+                    toast.loading(`Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total})`, { id: "sending" });
+                    
+                    // Call send-batch with article details
+                     await fetch("/api/send-batch", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            recipients: batch,
+                            type: "article",
+                            article: articleDetails
+                        }),
+                    });
+
+                    sentCount += batch.length;
+                }
+                toast.success(`Notifications sent to ${total} subscribers!`, { id: "sending" });
             }
-            toast.success(`Notifications sent to ${total} subscribers!`, { id: "sending" });
         } catch (emailError: any) {
             console.error(emailError);
             toast.error("Failed to send notifications: " + emailError.message, { id: "sending" });
