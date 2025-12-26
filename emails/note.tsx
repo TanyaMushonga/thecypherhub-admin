@@ -92,7 +92,7 @@ export const NoteEmail = ({ htmlContent, email }: NoteEmailProps) => (
               style={{
                 display: "inline-block",
                 marginLeft: "18px",
-                maxWidth: "180px",
+                maxWidth: "300px",
                 textAlign: "left",
                 verticalAlign: "top",
               }}
