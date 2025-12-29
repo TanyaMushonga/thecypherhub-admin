@@ -1,19 +1,20 @@
-import { extractNameFromEmail } from "@/lib/utils";
 import {
   Body,
+  Column,
   Container,
   Head,
   Heading,
+  Hr,
   Html,
+  Img,
+  Link,
   Preview,
+  Row,
   Section,
   Text,
-  Link,
-  Hr,
-  Img,
-  Row,
 } from "@react-email/components";
 import * as React from "react";
+import { extractNameFromEmail } from "@/lib/utils";
 
 interface NotificationEmailProps {
   articleTitle: string;
@@ -33,9 +34,30 @@ export const NotificationEmail = ({
   return (
     <Html>
       <Head />
-      <Preview>New Article: {articleTitle}</Preview>
       <Body style={main}>
+        <Preview>New Article: {articleTitle}</Preview>
         <Container style={container}>
+          <Section style={header}>
+            <Row>
+              <Column style={headerContent}>
+                <Heading style={headerContentTitle}>
+                  Stay Ahead with Tech Insights
+                </Heading>
+                <Text style={headerContentSubtitle}>
+                  Get expert tips, deep dives in software development.
+                </Text>
+              </Column>
+              <Column style={headerImageContainer}>
+                <Img
+                  style={headerImage}
+                  width={380}
+                  src={`https://www.thecypherhub.tech/cypherhub.png`}
+                  alt="The Cypher Hub"
+                />
+              </Column>
+            </Row>
+          </Section>
+
           <Section style={content}>
             <Heading as="h2" style={title}>
               New Article Published
@@ -43,157 +65,155 @@ export const NotificationEmail = ({
             <Text style={paragraph}>
               Hie, {extractNameFromEmail(email)} its Tanya here!
             </Text>
-            
+
             <Text style={paragraph}>
               I just published a new article that might interest you:
             </Text>
-            
+
             <Section style={articleCard}>
-                 <Heading as="h3" style={articleTitleStyle}>
-                    <Link href={articleLink} style={linkTitle}>
-                        {articleTitle}
-                    </Link>
-                 </Heading>
-                 <Text style={description}>
-                    {articleDescription}
-                 </Text>
-                 <Link href={articleLink} style={button}>
-                    Read More
-                 </Link>
+              <Heading as="h3" style={articleTitleStyle}>
+                <Link href={articleLink} style={linkTitle}>
+                  {articleTitle}
+                </Link>
+              </Heading>
+              <Text style={description}>{articleDescription}</Text>
+              <Link href={articleLink} style={button}>
+                Read More
+              </Link>
             </Section>
 
             <Row>
-            <Hr
-              style={{
-                borderColor: "rgb(209,213,219) !important",
-                marginTop: "16px",
-                marginBottom: "16px",
-              }}
-            />
-            <Section
-              style={{
-                display: "inline-block",
-                marginTop: "5px",
-                maxHeight: "48px",
-                maxWidth: "48px",
-                textAlign: "left" as const,
-              }}
-            >
-              <Img
-                alt="Tanya Mushonga"
-                height={48}
-                src="https://www.thecypherhub.tech/profile.jfif"
+              <Hr
                 style={{
-                  borderRadius: "9999px",
-                  display: "block",
-                  height: "48px",
-                  objectFit: "cover",
-                  objectPosition: "center",
-                  width: "48px",
+                  borderColor: "rgb(209,213,219) !important",
+                  marginTop: "16px",
+                  marginBottom: "16px",
                 }}
-                width={48}
               />
-            </Section>
-            <Section
-              style={{
-                display: "inline-block",
-                marginLeft: "18px",
-                maxWidth: "300px",
-                textAlign: "left" as const,
-                verticalAlign: "top",
-              }}
-            >
-                <Heading
-                as="h3"
-                style={{
-                  color: "rgb(31,41,55)",
-                  fontSize: "15px",
-                  fontWeight: 600,
-                  lineHeight: "22px",
-                  margin: "0px",
-                }}
-              >
-                Tanyaradzwa T Mushonga
-              </Heading>
-              <Text
-                style={{
-                  color: "rgb(107,114,128)",
-                  fontSize: "14px",
-                  fontWeight: 500,
-                  lineHeight: "16px",
-                  margin: "0px",
-                }}
-              >
-                Software Engineer
-              </Text>
               <Section
                 style={{
-                  marginTop: "8px",
+                  display: "inline-block",
+                  marginTop: "5px",
+                  maxHeight: "48px",
+                  maxWidth: "48px",
+                  textAlign: "left",
                 }}
               >
-                <Link
-                  href="https://github.com/TanyaMushonga"
+                <Img
+                  alt="Tanya Mushonga"
+                  height={48}
+                  src="https://www.thecypherhub.tech/profile.jfif"
                   style={{
-                    color: "#2563eb",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    marginRight: "10px",
-                    textDecoration: "underline",
+                    borderRadius: "9999px",
+                    display: "block",
+                    height: "48px",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    width: "48px",
                   }}
-                >
-                  GitHub
-                </Link>
-                <Link
-                  href="https://www.linkedin.com/in/tanyaradzwa-t-mushonga-b23745209/"
-                  style={{
-                    color: "#2563eb",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    marginRight: "10px",
-                    textDecoration: "underline",
-                  }}
-                >
-                  LinkedIn
-                </Link>
-                <Link
-                  href="https://tanyaradzwatmushonga.me"
-                  style={{
-                    color: "#2563eb",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                    textDecoration: "underline",
-                  }}
-                >
-                  Portfolio
-                </Link>
+                  width={48}
+                />
               </Section>
-            </Section>
-          </Row>
+              <Section
+                style={{
+                  display: "inline-block",
+                  marginLeft: "18px",
+                  maxWidth: "300px",
+                  textAlign: "left",
+                  verticalAlign: "top",
+                }}
+              >
+                <Heading
+                  as="h3"
+                  style={{
+                    color: "rgb(31,41,55)",
+                    fontSize: "15px",
+                    fontWeight: 600,
+                    lineHeight: "22px",
+                    margin: "0px",
+                  }}
+                >
+                  Tanyaradzwa T Mushonga
+                </Heading>
+                <Text
+                  style={{
+                    color: "rgb(107,114,128)",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                    lineHeight: "16px",
+                    margin: "0px",
+                  }}
+                >
+                  Software Engineer
+                </Text>
+                <Section
+                  style={{
+                    marginTop: "8px",
+                  }}
+                >
+                  <Link
+                    href="https://github.com/TanyaMushonga"
+                    style={{
+                      color: "#2563eb",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      marginRight: "10px",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    GitHub
+                  </Link>
+                  <Link
+                    href="https://www.linkedin.com/in/tanyaradzwa-t-mushonga-b23745209/"
+                    style={{
+                      color: "#2563eb",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      marginRight: "10px",
+                      textDecoration: "underline",
+                    }}
+                  >
+                    LinkedIn
+                  </Link>
+                  <Link
+                    href="https://tanyaradzwatmushonga.me"
+                    style={{
+                      color: "#2563eb",
+                      fontSize: "14px",
+                      fontWeight: 500,
+                      textDecoration: "underline",
+                    }}
+                  >
+                    Portfolio
+                  </Link>
+                </Section>
+              </Section>
+            </Row>
 
             <Section style={footer}>
-                <Text style={footerText}>
-                  You&apos;re receiving this email because you subscribed to our
-                  newsletter. If you don&apos;t want to receive these emails, you can
-                  unsubscribe at any time.
-                </Text>
+              <Text style={footerText}>
+                You&apos;re receiving this email because you subscribed to our
+                newsletter. If you don&apos;t want to receive these emails, you
+                can unsubscribe at any time.
+              </Text>
 
-                <Link
-                  href="https://www.thecypherhub.tech/unsubscribe"
-                  style={footerLink}
-                >
-                  Unsubscribe{" "}
-                </Link>
+              <Link
+                href="https://www.thecypherhub.tech/unsubscribe"
+                style={footerLink}
+              >
+                Unsubscribe{" "}
+              </Link>
 
-                <Link href="https://www.thecypherhub.tech/" style={footerLink}>
-                  Blog
-                </Link>
+              <Link href="https://www.thecypherhub.tech/" style={footerLink}>
+                Blog
+              </Link>
 
-                <Hr style={footerDivider} />
+              <Hr style={footerDivider} />
 
-                <Text style={footerAddress}>
-                  <strong>The Cypher Hub</strong>, Bulawayo, Zimbabwe
-                </Text>
-                <Text style={footerHeart}>{"<3"}</Text>
+              <Text style={footerAddress}>
+                <strong>The Cypher Hub</strong>, Bulawayo, Zimbabwe
+              </Text>
+              <Text style={footerHeart}>{"<3"}</Text>
             </Section>
           </Section>
         </Container>
@@ -206,65 +226,90 @@ export default NotificationEmail;
 
 // Styles
 const main = {
-  backgroundColor: "#f6f9fc",
-  fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+  backgroundColor: "#f3f3f5",
+  fontFamily: "HelveticaNeue,Helvetica,Arial,sans-serif",
+};
+
+const headerContent = { padding: "20px 30px 15px" };
+
+const headerContentTitle = {
+  color: "#fff",
+  fontSize: "25px",
+  fontWeight: "bold",
+  lineHeight: "24px",
+};
+
+const headerContentSubtitle = {
+  color: "#fff",
+  fontSize: "15px",
+};
+
+const headerImageContainer = {
+  padding: "30px 10px",
+};
+
+const headerImage = {
+  maxWidth: "100%",
 };
 
 const container = {
-  backgroundColor: "#ffffff",
+  width: "680px",
+  maxWidth: "100%",
   margin: "0 auto",
-  marginBottom: "64px",
-  padding: "20px 0 48px",
-  borderRadius: "5px",
-  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
-  maxWidth: "600px",
+  backgroundColor: "#ffffff",
 };
 
 const content = {
-  padding: "0 48px",
+  padding: "30px 30px 40px 30px",
+};
+
+const header = {
+  borderRadius: "5px 5px 0 0",
+  display: "flex",
+  flexDirection: "column" as const,
+  backgroundColor: "#2b2d6e",
 };
 
 const title = {
-  fontSize: "24px",
+  margin: "0 0 15px",
   fontWeight: "bold",
-  color: "#333",
-  textAlign: "center" as const,
-  margin: "30px 0",
+  fontSize: "21px",
+  lineHeight: "21px",
+  color: "#0c0d0e",
 };
 
 const paragraph = {
-  color: "#525f7f",
-  fontSize: "18px",
+  fontSize: "15px",
   lineHeight: "26px",
-  textAlign: "left" as const,
+  color: "#3c3f44",
 };
 
 const articleCard = {
-    padding: "20px",
-    backgroundColor: "#f9fafb",
-    borderRadius: "8px",
-    marginTop: "20px",
-    marginBottom: "20px",
-    border: "1px solid #e5e7eb",
+  padding: "15px",
+  backgroundColor: "#f9fafb",
+  borderRadius: "8px",
+  marginTop: "15px",
+  marginBottom: "15px",
+  border: "1px solid #e5e7eb",
 };
 
 const articleTitleStyle = {
-    marginTop: "0",
-    marginBottom: "10px",
-    fontSize: "20px",
-    fontWeight: "600",
+  marginTop: "0",
+  marginBottom: "8px",
+  fontSize: "18px",
+  fontWeight: "600",
 };
 
 const linkTitle = {
-    color: "#2563eb",
-    textDecoration: "none",
+  color: "#2563eb",
+  textDecoration: "none",
 };
 
 const description = {
-    color: "#4b5563",
-    fontSize: "14px",
-    lineHeight: "20px",
-    marginBottom: "15px",
+  color: "#4b5563",
+  fontSize: "14px",
+  lineHeight: "20px",
+  marginBottom: "12px",
 };
 
 const button = {
@@ -276,27 +321,16 @@ const button = {
   textDecoration: "none",
   textAlign: "center" as const,
   display: "inline-block",
-  padding: "10px 20px",
-};
-
-const hr = {
-  borderColor: "#e6ebf1",
-  margin: "20px 0",
-};
-
-const divider = {
-  margin: "30px 0",
+  padding: "8px 16px",
 };
 
 const footer = {
-  width: "680px",
-  maxWidth: "100%",
-  margin: "32px auto 0 auto",
-  padding: "0 30px",
+  width: "100%",
+  marginTop: "32px",
 };
 
 const footerDivider = {
-  ...divider,
+  margin: "30px 0",
   borderColor: "#d6d8db",
 };
 
