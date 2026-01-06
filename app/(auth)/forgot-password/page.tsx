@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import LoadingButton from "@/components/othercomponents/LoadingButton";
 import Link from "next/link";
 // We'll create this action later
-// import { forgotPassword } from "@/actions/forgotPassword"; 
+// import { forgotPassword } from "@/actions/forgotPassword";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -40,23 +40,23 @@ export default function ForgotPasswordPage() {
     setError(undefined);
     setSuccess(undefined);
     startTransition(async () => {
-        try {
-            const response = await fetch("/api/auth/forgot-password", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(values),
-            });
-            
-            const data = await response.json();
+      try {
+        const response = await fetch("/api/auth/forgot-password", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(values),
+        });
 
-            if (!response.ok) {
-                setError(data.error || "Something went wrong");
-            } else {
-                setSuccess("If an account exists, a reset link has been sent.");
-            }
-        } catch (err) {
-            setError("Something went wrong. Please try again.");
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(data.error || "Something went wrong");
+        } else {
+          setSuccess("If an account exists, a reset link has been sent.");
         }
+      } catch {
+        setError("Something went wrong. Please try again.");
+      }
     });
   }
 
@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {error && <p className="text-center text-destructive">{error}</p>}
             {success && <p className="text-center text-green-500">{success}</p>}
-            
+
             <FormField
               control={form.control}
               name="email"
@@ -84,15 +84,18 @@ export default function ForgotPasswordPage() {
                 </FormItem>
               )}
             />
-            
+
             <LoadingButton loading={isPending} type="submit" className="w-full">
               Send Reset Link
             </LoadingButton>
 
             <div className="text-center">
-                <Link href="/login" className="text-sm text-primary hover:underline">
-                    Back to Login
-                </Link>
+              <Link
+                href="/login"
+                className="text-sm text-primary hover:underline"
+              >
+                Back to Login
+              </Link>
             </div>
           </form>
         </Form>
