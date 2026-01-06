@@ -59,7 +59,7 @@ function AddArticlePage() {
         } else if (typeof errorData.error === "string") {
           errorMessage = errorData.error;
         }
-      } catch (e) {
+      } catch {
         const textError = await response.text();
         if (textError) errorMessage = textError;
       }
@@ -91,8 +91,8 @@ function AddArticlePage() {
 
       const subscribersList = Array.isArray(subData) ? subData : [];
       const subscribers: string[] = subscribersList
-        .filter((sub: any) => sub.status === 1)
-        .map((sub: any) => sub.email);
+        .filter((sub: Subscribers) => sub.status === 1)
+        .map((sub: Subscribers) => sub.email);
 
       if (subscribers.length === 0) {
         toast.error("No active subscribers found", { id: "sending" });
@@ -133,11 +133,15 @@ function AddArticlePage() {
           id: "sending",
         });
       }
-    } catch (emailError: any) {
+    } catch (emailError: unknown) {
       console.error(emailError);
-      toast.error("Failed to send notifications: " + emailError.message, {
-        id: "sending",
-      });
+      toast.error(
+        "Failed to send notifications: " +
+          (emailError instanceof Error ? emailError.message : "Unknown error"),
+        {
+          id: "sending",
+        }
+      );
     } finally {
       setShowEmailDialog(false);
       router.push("/articles");

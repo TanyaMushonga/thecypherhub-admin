@@ -4,7 +4,6 @@ import { calculateReadTime } from "../../../lib/utils";
 import { validateRequest } from "@/auth";
 import { put } from "@vercel/blob";
 
-
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
@@ -61,11 +60,9 @@ export async function POST(req: Request) {
       authorId: loggedInUser.id,
     };
 
-    const createdArticle = await prisma.articles.create({
+    await prisma.articles.create({
       data,
     });
-
-
 
     revalidatePath("/blog");
     revalidatePath(`/blog/${slug}`);

@@ -277,39 +277,46 @@ export const sendNoteBatch = async (
     }
 
     return data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error sending note batch:", error);
-    throw new Error(error.message || "Error sending note batch");
+    throw new Error(
+      (error as { message?: string }).message || "Error sending note batch"
+    );
   }
 };
 
 export const sendArticleNotificationBatch = async (
-    recipients: string[],
-    article: { title: string; description: string; slug: string; content: string }
-  ) => {
-    try {
-      const batchData = recipients.map((email) => ({
-        from: "Tanyaradzwa T Mushonga <newsletter@thecypherhub.tech>",
-        to: email,
-        subject: `New: ${article.title}`,
-        react: NotificationEmail({ 
-            articleTitle: article.title,
-            articleDescription: article.description,
-            articleSlug: article.slug,
-            email 
-        }),
-      }));
-  
-      const { data, error } = await resend.batch.send(batchData);
-  
-      if (error) {
-        console.error("Error sending article notification batch:", error);
-        throw new Error("Error sending article notification batch: " + error.message);
-      }
-  
-      return data;
-    } catch (error: any) {
+  recipients: string[],
+  article: { title: string; description: string; slug: string; content: string }
+) => {
+  try {
+    const batchData = recipients.map((email) => ({
+      from: "Tanyaradzwa T Mushonga <newsletter@thecypherhub.tech>",
+      to: email,
+      subject: `New: ${article.title}`,
+      react: NotificationEmail({
+        articleTitle: article.title,
+        articleDescription: article.description,
+        articleSlug: article.slug,
+        email,
+      }),
+    }));
+
+    const { data, error } = await resend.batch.send(batchData);
+
+    if (error) {
       console.error("Error sending article notification batch:", error);
-      throw new Error(error.message || "Error sending article notification batch");
+      throw new Error(
+        "Error sending article notification batch: " + error.message
+      );
     }
-  };
+
+    return data;
+  } catch (error: unknown) {
+    console.error("Error sending article notification batch:", error);
+    throw new Error(
+      (error as { message?: string }).message ||
+        "Error sending article notification batch"
+    );
+  }
+};

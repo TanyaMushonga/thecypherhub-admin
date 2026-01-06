@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
             router.push("/login");
           }, 2000);
         }
-      } catch (err) {
+      } catch {
         setError("Something went wrong. Please try again.");
       }
     });
@@ -78,10 +78,10 @@ export default function ResetPasswordPage() {
 
   if (!token) {
     return (
-        <main className="flex justify-center items-center h-[90vh] bg-[#020617] text-white">
-            <p>Invalid link. Please check your email again.</p>
-        </main>
-    )
+      <main className="flex justify-center items-center h-[90vh] bg-[#020617] text-white">
+        <p>Invalid link. Please check your email again.</p>
+      </main>
+    );
   }
 
   return (

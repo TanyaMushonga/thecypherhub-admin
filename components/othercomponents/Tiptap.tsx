@@ -15,7 +15,6 @@ import TableRow from "@tiptap/extension-table-row";
 import Gapcursor from "@tiptap/extension-gapcursor";
 import TextAlign from "@tiptap/extension-text-align";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
-// load all languages with "all" or common languages with "common"
 import { common, createLowlight } from "lowlight";
 import { useEffect } from "react";
 
@@ -41,9 +40,9 @@ const Tiptap = ({
     immediatelyRender,
     extensions: [
       StarterKit.configure({
-         heading: {
-             levels: [1, 2, 3, 4, 5, 6],
-         }
+        heading: {
+          levels: [1, 2, 3, 4, 5, 6],
+        },
       }),
       Underline,
       Document,
@@ -170,13 +169,16 @@ const Tiptap = ({
     <div className="flex flex-col h-full bg-slate-900 rounded-lg overflow-hidden border border-blue-900/50">
       {/* Sticky Toolbar */}
       <div className="sticky top-0 z-10 bg-blue-950/95 backdrop-blur-sm border-b border-blue-900/50">
-        <Toolbar editor={editor} content={content} />
+        <Toolbar editor={editor} />
       </div>
 
       {/* Scrollable Content Area */}
       <div className="flex-1 overflow-y-auto bg-slate-900/50 p-8 custom-scrollbar relative">
         <div className="min-h-full flex justify-center items-start">
-             <EditorContent editor={editor} className="w-full flex justify-center" />
+          <EditorContent
+            editor={editor}
+            className="w-full flex justify-center"
+          />
         </div>
       </div>
     </div>
