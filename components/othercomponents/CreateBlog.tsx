@@ -61,7 +61,7 @@ const CreateBlog = () => {
     if (!content.title && !content.content && !content.slug) return;
 
     setIsSaving(true);
-    
+
     const timeoutId = setTimeout(() => {
       localStorage.setItem("blogContent", JSON.stringify(content));
       setLastSaved(new Date());
@@ -73,23 +73,6 @@ const CreateBlog = () => {
 
   const handleContentChange = (newContent: string) => {
     setContent((prev) => ({ ...prev, content: newContent }));
-  };
-
-  const validateImageDimensions = (file: File): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        if (img.width === 1200 && img.height === 630) {
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      };
-      img.onerror = () => {
-        reject(new Error("Failed to load image"));
-      };
-    });
   };
 
   const handleKeywordInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -229,11 +212,11 @@ const CreateBlog = () => {
                 }
               />
             </div>
-            
+
             <div className="flex justify-end mb-2">
-                 <span className="text-xs text-sky-400 font-mono transition-opacity duration-300">
-                    {getSaveStatus()}
-                  </span>
+              <span className="text-xs text-sky-400 font-mono transition-opacity duration-300">
+                {getSaveStatus()}
+              </span>
             </div>
 
             <div className="flex flex-col w-full mb-4">

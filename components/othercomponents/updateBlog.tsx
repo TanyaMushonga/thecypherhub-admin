@@ -7,14 +7,14 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 
 type ArticleFormData = {
-    title: string;
-    slug: string;
-    description: string;
-    category: string;
-    content: string;
-    keywords: string[];
-    coverImgUrl?: string; // Add this to match BlogEditor interface
-  };
+  title: string;
+  slug: string;
+  description: string;
+  category: string;
+  content: string;
+  keywords: string[];
+  coverImgUrl?: string; // Add this to match BlogEditor interface
+};
 
 function UpdateBlog() {
   const { slug } = useParams();
@@ -46,56 +46,58 @@ function UpdateBlog() {
   const handleSubmit = async (data: ArticleFormData, coverImage?: File) => {
     setLoading(true);
     try {
-        const formData = new FormData();
-        formData.append("title", data.title);
-        formData.append("slug", data.slug);
-        formData.append("description", data.description);
-        formData.append("category", data.category);
-        formData.append("content", data.content);
-        formData.append("keywords", JSON.stringify(data.keywords));
-        
-        if (coverImage) {
-            formData.append("coverImgUrl", coverImage);
-        }
+      const formData = new FormData();
+      formData.append("title", data.title);
+      formData.append("slug", data.slug);
+      formData.append("description", data.description);
+      formData.append("category", data.category);
+      formData.append("content", data.content);
+      formData.append("keywords", JSON.stringify(data.keywords));
 
-        const response = await fetch(`/api/blog/${slug}`, {
-            method: "PATCH",
-            body: formData,
-        });
+      if (coverImage) {
+        formData.append("coverImgUrl", coverImage);
+      }
 
-        if (!response.ok) {
-            const err = await response.text();
-             throw new Error(err || "Failed to update blog");
-        }
+      const response = await fetch(`/api/blog/${slug}`, {
+        method: "PATCH",
+        body: formData,
+      });
 
-        toast.success("Blog updated successfully");
-        router.push("/articles");
-    } catch (error: any) {
-        toast.error(error.message);
-        console.error(error);
+      if (!response.ok) {
+        const err = await response.text();
+        throw new Error(err || "Failed to update blog");
+      }
+
+      toast.success("Blog updated successfully");
+      router.push("/articles");
+    } catch (error: unknown) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update blog"
+      );
+      console.error(error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
   if (fetching) {
-      return (
-          <div className="flex h-64 items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-          </div>
-      );
+    return (
+      <div className="flex h-64 items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+      </div>
+    );
   }
 
   if (!initialData) return null;
 
   return (
     <div className="pt-4 h-full bg-primary/20">
-         <BlogEditor 
-            initialData={initialData} 
-            isEditing={true} 
-            onSubmit={handleSubmit} 
-            loading={loading} 
-        />
+      <BlogEditor
+        initialData={initialData}
+        isEditing={true}
+        onSubmit={handleSubmit}
+        loading={loading}
+      />
     </div>
   );
 }
