@@ -182,7 +182,10 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     if (!content.collectionId && !content.category)
       return setError("Category is required");
     if (!content.description) return setError("Description is required");
-    if (!content.content) return setError("Content is required");
+    const isContentEmpty =
+      !content.content ||
+      content.content.replace(/<[^>]*>/g, "").trim().length === 0;
+    if (isContentEmpty) return setError("Content is required");
     if (!content.keywords || content.keywords.length === 0)
       return setError("Keywords are required");
     if (!content.slug) return setError("Slug is required");
@@ -352,58 +355,35 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
             )}
 
             {/* Collection */}
-            <div className="space-y-2">
-              <label
-                htmlFor="collection"
-                className="text-sm font-medium text-slate-300"
-              >
-                Collection (Optional)
-              </label>
-              <select
-                id="collection"
-                className="w-full bg-blue-900/50 border border-blue-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={content.collectionId || ""}
-                onChange={(e) =>
-                  setContent((prev) => ({
-                    ...prev,
-                    collectionId: e.target.value,
-                  }))
-                }
-              >
-                <option value="">None</option>
-                {collections.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Status */}
-            <div className="space-y-2">
-              <label
-                htmlFor="status"
-                className="text-sm font-medium text-slate-300"
-              >
-                Status
-              </label>
-              <select
-                id="status"
-                className="w-full bg-blue-900/50 border border-blue-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={content.status}
-                onChange={(e) =>
-                  setContent((prev) => ({
-                    ...prev,
-                    status: e.target.value as "published" | "unpublished",
-                  }))
-                }
-              >
-                <option value="published">Published</option>
-                <option value="unpublished">
-                  Unpublished (Checklist Only)
-                </option>
-              </select>
-            </div>
+            {content.collectionId && (
+              <div className="space-y-2">
+                <label
+                  htmlFor="collection"
+                  className="text-sm font-medium text-slate-300"
+                >
+                  Collection
+                </label>
+                <select
+                  id="collection"
+                  className="w-full bg-blue-900/50 border border-blue-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  value={content.collectionId || ""}
+                  disabled={!!content.collectionId}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      collectionId: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">None</option>
+                  {collections.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Description */}
             <div className="space-y-2">
@@ -524,8 +504,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
 
               <Button
                 type="submit"
-                disabled={loading}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
+                disabled={
+                  loading ||
+                  !content.content ||
+                  content.content.replace(/<[^>]*>/g, "").trim().length === 0
+                }
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading
