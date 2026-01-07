@@ -161,6 +161,16 @@ export default function CollectionsPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="cover">Cover Image (Optional)</Label>
+                {coverFile && (
+                  <div className="relative w-full h-32 rounded-lg overflow-hidden border border-blue-900">
+                    <Image
+                      src={URL.createObjectURL(coverFile)}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                )}
                 <Input
                   id="cover"
                   type="file"
