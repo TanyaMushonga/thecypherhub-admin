@@ -13,7 +13,6 @@ import {
   Plus,
   Trash2,
   Image as ImageIcon,
-  ExternalLink,
   ChevronRight,
   X,
 } from "lucide-react";
@@ -184,6 +183,16 @@ export default function CollectionDetailPage() {
       if (!isValid) return;
     }
 
+    if (newArtDate) {
+      const selectedDate = new Date(newArtDate);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate < today) {
+        toast.error("Planned/Publish Date cannot be in the past");
+        return;
+      }
+    }
+
     setAddLoading(true);
     try {
       const formData = new FormData();
@@ -342,6 +351,16 @@ export default function CollectionDetailPage() {
                     </div>
                     <div className="grid w-full items-center gap-1.5">
                       <Label htmlFor="cover">New Cover Image</Label>
+                      {editCover && (
+                        <div className="relative w-full h-32 rounded-lg overflow-hidden border border-blue-900">
+                          <Image
+                            src={URL.createObjectURL(editCover)}
+                            alt="Preview"
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
                       <Input
                         id="cover"
                         type="file"
@@ -420,75 +439,84 @@ export default function CollectionDetailPage() {
                 <DialogTrigger asChild>
                   <Button className="bg-blue-600 hover:bg-blue-700">
                     <Plus className="w-4 h-4 mr-2" />
-                    Quick Add Shell
+                    Add Article to collection
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-slate-900 border-slate-800 text-white sm:max-w-[500px] max-h-[90vh] overflow-y-auto dark">
-                  <DialogHeader>
-                    <DialogTitle>Quick Add Metadata</DialogTitle>
-                    <DialogDescription className="text-slate-400">
-                      Capture basic article info now, write content later.
-                    </DialogDescription>
-                  </DialogHeader>
+                  {!addSuccess && (
+                    <DialogHeader>
+                      <DialogTitle>Add Article to collection</DialogTitle>
+                      <DialogDescription className="text-slate-400">
+                        Capture basic article info now, write content later.
+                      </DialogDescription>
+                    </DialogHeader>
+                  )}
 
                   {addSuccess ? (
-                    <div className="py-8 space-y-6 text-center overflow-x-hidden px-1">
-                      <div className="flex flex-col items-center gap-4">
-                        <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center">
-                          <CheckCircle2 className="w-10 h-10 text-green-500" />
+                    <div className="py-2 space-y-8 text-center overflow-x-hidden px-1 flex flex-col items-center">
+                      <div className="flex flex-col items-center gap-4 mt-4">
+                        <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500/20 shadow-[0_0_20px_rgba(34,197,94,0.1)]">
+                          <CheckCircle2 className="w-12 h-12 text-green-500" />
                         </div>
-                        <h3 className="text-xl font-bold">Article Added!</h3>
-                        <p className="text-slate-400 text-sm max-w-[300px]">
-                          The shell article &quot;{newArtTitle}&quot; has been
-                          added to your roadmap.
-                        </p>
+                        <div className="space-y-2">
+                          <h3 className="text-2xl font-bold text-white tracking-tight">
+                            Article Added!
+                          </h3>
+                          <p className="text-slate-400 text-sm max-w-[320px] leading-relaxed">
+                            The shell article &quot;{newArtTitle}&quot; is now
+                            tracked in your project roadmap.
+                          </p>
+                        </div>
                       </div>
 
-                      <Card className="bg-blue-950/20 border-blue-900 text-left overflow-hidden mx-auto w-full max-w-sm">
-                        {newArtCoverPreview && (
-                          <div className="h-32 w-full relative">
-                            <Image
-                              src={newArtCoverPreview}
-                              alt="Preview"
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
-                        <CardContent className="p-4">
-                          <h4 className="text-white font-medium truncate">
-                            {newArtTitle}
-                          </h4>
-                          <p className="text-xs text-slate-500 mt-1 line-clamp-2">
-                            {newArtDesc || "No description provided"}
-                          </p>
-                        </CardContent>
-                      </Card>
+                      <div className="w-full max-w-sm mx-auto space-y-6">
+                        <Card className="bg-slate-950/40 border-slate-800 text-left overflow-hidden shadow-xl backdrop-blur-md">
+                          {newArtCoverPreview && (
+                            <div className="h-40 w-full relative group">
+                              <Image
+                                src={newArtCoverPreview}
+                                alt="Preview"
+                                fill
+                                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent" />
+                            </div>
+                          )}
+                          <CardContent className="p-5">
+                            <h4 className="text-white font-semibold text-base truncate">
+                              {newArtTitle}
+                            </h4>
+                            <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                              {newArtDesc || "No description provided"}
+                            </p>
+                          </CardContent>
+                        </Card>
 
-                      <div className="flex gap-3">
-                        <Button
-                          variant="outline"
-                          onClick={() => setIsQuickAddOpen(false)}
-                          className="flex-1 border-slate-700"
-                        >
-                          Close
-                        </Button>
-                        <Button
-                          onClick={() =>
-                            router.push(
-                              `/article/${
-                                newArtSlug ||
-                                newArtTitle
-                                  .toLowerCase()
-                                  .replace(/ /g, "-")
-                                  .replace(/[^\w-]+/g, "")
-                              }/edit`
-                            )
-                          }
-                          className="flex-1 bg-blue-600 hover:bg-blue-700"
-                        >
-                          Go to Editor
-                        </Button>
+                        <div className="flex gap-4 w-full">
+                          <Button
+                            variant="outline"
+                            onClick={() => setIsQuickAddOpen(false)}
+                            className="flex-1 border-slate-800 bg-transparent hover:bg-slate-800 transition-colors"
+                          >
+                            Dismiss
+                          </Button>
+                          <Button
+                            onClick={() =>
+                              router.push(
+                                `/article/${
+                                  newArtSlug ||
+                                  newArtTitle
+                                    .toLowerCase()
+                                    .replace(/ /g, "-")
+                                    .replace(/[^\w-]+/g, "")
+                                }/edit`
+                              )
+                            }
+                            className="flex-1 bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/20"
+                          >
+                            Open Editor
+                          </Button>
+                        </div>
                       </div>
                     </div>
                   ) : (
@@ -552,6 +580,7 @@ export default function CollectionDetailPage() {
                             id="artDate"
                             type="date"
                             value={newArtDate}
+                            min={new Date().toISOString().split("T")[0]}
                             onChange={(e) => setNewArtDate(e.target.value)}
                             className="bg-blue-950/50 border-blue-900 focus:ring-blue-500 text-white [color-scheme:dark]"
                           />
@@ -648,14 +677,6 @@ export default function CollectionDetailPage() {
                   )}
                 </DialogContent>
               </Dialog>
-              <Link href="/add-article">
-                <Button
-                  variant="outline"
-                  className="border-blue-900 text-blue-400 hover:bg-blue-950"
-                >
-                  Full Editor
-                </Button>
-              </Link>
             </div>
           </div>
 
@@ -705,22 +726,15 @@ export default function CollectionDetailPage() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Link href={`/article/${article.slug}`}>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="text-slate-500 hover:text-white hover:bg-blue-900/50"
-                        >
-                          <ExternalLink className="w-4 h-4" />
-                        </Button>
-                      </Link>
                       <Button
                         onClick={() =>
                           router.push(`/article/${article.slug}/edit`)
                         }
                         className="bg-blue-600/10 text-blue-400 border border-blue-900 hover:bg-blue-600 hover:text-white"
                       >
-                        Finish Content
+                        {article.status === "published"
+                          ? "Update Content"
+                          : "Finish Content"}
                         <ChevronRight className="w-4 h-4 ml-1" />
                       </Button>
                     </div>
