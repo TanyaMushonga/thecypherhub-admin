@@ -1,4 +1,12 @@
-import { Plus, Home, Book, User, NotebookPen, BookOpen } from "lucide-react";
+import {
+  Plus,
+  Home,
+  Book,
+  User,
+  NotebookPen,
+  BookOpen,
+  Trash2,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -46,6 +54,11 @@ const items = [
     title: "Notes",
     url: "/notes",
     icon: NotebookPen,
+  },
+  {
+    title: "Trash",
+    url: "/trash",
+    icon: Trash2,
   },
 ];
 
