@@ -9,29 +9,61 @@ export default async function Home() {
     <main className="bg-primary min-h-screen w-full py-10">
       <div className="px-5 md:px-10 space-y-10">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <div className="bg-blue-950 p-6 rounded-lg shadow-sm border border-slate-800">
-            <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Subscribers</h3>
+            <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider">
+              Total Subscribers
+            </h3>
             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-white">{stats.subscribers}</span>
-              <span className="text-xs text-green-400 font-medium">({stats.activeSubscribers} Active)</span>
-            </div>
-          </div>
-          
-          <div className="bg-blue-950 p-6 rounded-lg shadow-sm border border-slate-800">
-            <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Articles</h3>
-            <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-white">{stats.articles}</span>
-              <span className="text-xs text-blue-400 font-medium">Published</span>
+              <span className="text-3xl font-bold text-white">
+                {stats.subscribers}
+              </span>
+              <span className="text-xs text-green-400 font-medium">
+                ({stats.activeSubscribers} Active)
+              </span>
             </div>
           </div>
 
           <div className="bg-blue-950 p-6 rounded-lg shadow-sm border border-slate-800">
-            <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider">Total Comments</h3>
-             <div className="mt-2 flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-white">{stats.comments}</span>
-              <span className="text-xs text-purple-400 font-medium">Engagement</span>
-             </div>
+            <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider">
+              Total Articles
+            </h3>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-white">
+                {stats.articles}
+              </span>
+              <span className="text-xs text-blue-400 font-medium">
+                Published
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-blue-950 p-6 rounded-lg shadow-sm border border-slate-800">
+            <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider">
+              Total Comments
+            </h3>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-white">
+                {stats.comments}
+              </span>
+              <span className="text-xs text-purple-400 font-medium">
+                Engagement
+              </span>
+            </div>
+          </div>
+
+          <div className="bg-blue-950 p-6 rounded-lg shadow-sm border border-slate-800">
+            <h3 className="text-slate-400 text-sm font-medium uppercase tracking-wider">
+              Total Collections
+            </h3>
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-3xl font-bold text-white">
+                {stats.collections}
+              </span>
+              <span className="text-xs text-orange-400 font-medium">
+                Series
+              </span>
+            </div>
           </div>
         </div>
 
