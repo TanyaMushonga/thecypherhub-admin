@@ -15,6 +15,7 @@ export async function GET() {
     }
 
     const collections = await prisma.collection.findMany({
+      where: { isDeleted: false },
       orderBy: {
         createdAt: "desc",
       },
