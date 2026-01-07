@@ -21,10 +21,11 @@ export async function GET(req: Request) {
       });
     }
 
-    const collection = await prisma.collection.findUnique({
-      where: { id },
+    const collection = await prisma.collection.findFirst({
+      where: { id, isDeleted: false },
       include: {
         articles: {
+          where: { isDeleted: false },
           orderBy: {
             createdAt: "asc",
           },
@@ -146,21 +147,16 @@ export async function DELETE(req: Request) {
       });
     }
 
-    // Fetch for cover image cleanup
-    const existing = await prisma.collection.findUnique({
+    // Soft delete the collection
+    await prisma.collection.update({
       where: { id, authorId: loggedInUser.id },
+      data: { isDeleted: true },
     });
 
-    if (existing?.coverImgUrl) {
-      try {
-        await del(existing.coverImgUrl);
-      } catch (e) {
-        console.error("Failed to delete collection cover during delete:", e);
-      }
-    }
-
-    await prisma.collection.delete({
-      where: { id, authorId: loggedInUser.id },
+    // Cascade soft delete to all articles in this collection
+    await prisma.articles.updateMany({
+      where: { collectionId: id, authorId: loggedInUser.id },
+      data: { isDeleted: true },
     });
 
     return new Response(
