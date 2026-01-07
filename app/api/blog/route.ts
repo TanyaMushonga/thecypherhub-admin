@@ -25,14 +25,20 @@ export async function GET(request: Request) {
     const skip = (page - 1) * pageSize;
     const take = pageSize;
 
-    const where = search
-      ? {
-          OR: [
-            { title: { contains: search, mode: "insensitive" as const } },
-            { description: { contains: search, mode: "insensitive" as const } },
-          ],
-        }
-      : {};
+    const where = {
+      isDeleted: false,
+      status: "published",
+      ...(search
+        ? {
+            OR: [
+              { title: { contains: search, mode: "insensitive" as const } },
+              {
+                description: { contains: search, mode: "insensitive" as const },
+              },
+            ],
+          }
+        : {}),
+    };
 
     const blogs = await prisma.articles.findMany({
       where,

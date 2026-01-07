@@ -14,8 +14,12 @@ export async function GET(req: Request) {
       });
     }
 
-    const blog = await prisma.articles.findUnique({
-      where: { slug: slug },
+    const blog = await prisma.articles.findFirst({
+      where: {
+        slug: slug,
+        isDeleted: false,
+        status: "published",
+      },
       include: {
         comments: {
           orderBy: {
@@ -77,11 +81,16 @@ export async function PATCH(req: Request) {
     const formData = await req.formData();
     const title = formData.get("title") as string;
     const description = formData.get("description") as string;
-    const category = formData.get("category") as string;
+    const collectionId = formData.get("collectionId") as string | null;
+    const category =
+      (formData.get("category") as string) ||
+      (collectionId ? null : blog.category || "General");
     const content = formData.get("content") as string;
     const keywords = JSON.parse(formData.get("keywords") as string);
     const SLUG = formData.get("slug") as string;
-    const coverImgFile = formData.get("coverImgUrl") as File;
+    const status = formData.get("status") as string;
+    const publishedAtStr = formData.get("publishedAt") as string | null;
+    const coverImgFile = formData.get("coverImgUrl") as File | null;
 
     if (!Array.isArray(keywords)) {
       return new Response(
@@ -93,11 +102,17 @@ export async function PATCH(req: Request) {
     }
 
     let coverImgUrl = blog.coverImgUrl!;
-    if (coverImgFile) {
-      await del(coverImgUrl);
+    if (coverImgFile && coverImgFile.size > 0) {
+      if (coverImgUrl) {
+        try {
+          await del(coverImgUrl);
+        } catch (e) {
+          console.error("Failed to delete old cover image:", e);
+        }
+      }
 
       // Upload the new image to Vercel Blob
-      const coverImgName = `${slug}`;
+      const coverImgName = `blog-${SLUG}`;
       const blob = await put(coverImgName, coverImgFile, {
         access: "public",
       });
@@ -105,14 +120,27 @@ export async function PATCH(req: Request) {
       coverImgUrl = blob.url;
     }
 
+    let publishedAt = blog.publishedAt;
+    if (status === "published" && !blog.publishedAt) {
+      publishedAt = publishedAtStr ? new Date(publishedAtStr) : new Date();
+    } else if (publishedAtStr) {
+      publishedAt = new Date(publishedAtStr);
+    } else if (status === "unpublished" && !publishedAtStr) {
+      // Keep existing publishedAt if it was previously published,
+      // or keep it null if it's still unpublished.
+    }
+
     const updatedData = {
       title,
       description,
-      category,
+      category: category as string | null,
       coverImgUrl,
       content,
       keywords,
       slug: SLUG,
+      collectionId: collectionId || null,
+      status: status,
+      publishedAt,
     };
 
     const updatedBlog = await prisma.articles.update({
@@ -167,12 +195,9 @@ export async function DELETE(req: Request) {
         status: 404,
       });
     }
-    if (blog.coverImgUrl) {
-      await del(blog.coverImgUrl);
-    }
-
-    await prisma.articles.delete({
+    await prisma.articles.update({
       where: { slug: slug, authorId: loggedInUser.id },
+      data: { isDeleted: true },
     });
 
     revalidatePath("/blog");

@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { SidebarProvider, SidebarTrigger } from "../../components/ui/sidebar";
 import { AppSidebar } from "../../components/ui/app-sidebar";
 import { cookies } from "next/headers";
-import Link from "next/link";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -33,12 +32,6 @@ export default async function Layout({
             <h1 className="text-center text-xl md:text-3xl text-white font-bold">
               The Cypher Hub Dashboard
             </h1>
-            <Link
-              href="/add-article"
-              className="bg-blue-500 p-2 md:p-4 rounded-sm text-white font-bold"
-            >
-              Add an article
-            </Link>
           </div>
         </div>
         <Toaster />

@@ -10,8 +10,23 @@ declare interface Article {
   slug: string;
   authorId: string;
   createdAt: string;
-  updateAt: string;
+  updatedAt: string;
   comments: Comment[];
+  collectionId?: string;
+  status: "published" | "unpublished";
+  publishedAt?: string;
+}
+
+declare interface Collection {
+  id: string;
+  name: string;
+  description?: string;
+  coverImgUrl?: string;
+  slug: string;
+  authorId: string;
+  createdAt: string;
+  updatedAt: string;
+  articles: Article[];
 }
 
 declare interface Comment {
@@ -41,4 +56,6 @@ declare interface ArticleFormData {
   content: string;
   keywords: string[];
   coverImgUrl?: string; // Optional for form data as it might be a File or url string handled separately
+  collectionId?: string;
+  status: "published" | "unpublished";
 }

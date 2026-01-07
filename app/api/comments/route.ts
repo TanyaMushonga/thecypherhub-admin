@@ -1,4 +1,5 @@
 import { sendCommentNotification } from "@/lib/emails";
+import { validateRequest } from "@/auth";
 import prisma from "@/lib/prisma";
 
 export async function GET(request: Request) {
@@ -15,9 +16,17 @@ export async function GET(request: Request) {
       });
     }
 
+    const { user: loggedInUser } = await validateRequest();
+
     const comments = await prisma.comments.findMany({
       where: {
         articleId: articleId,
+        article: {
+          is: {
+            isDeleted: false,
+            ...(!loggedInUser ? { status: "published" } : {}),
+          },
+        },
       },
       orderBy: {
         createdAt: "desc",

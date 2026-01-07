@@ -35,7 +35,10 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     category: "",
     content: "",
     keywords: [],
+    collectionId: "",
+    status: "unpublished",
   });
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [blogCover, setBlogCover] = useState<File>();
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [keywordInput, setKeywordInput] = useState("");
@@ -62,10 +65,26 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     if (!isEditing) {
       const savedContent = localStorage.getItem("blogContent");
       if (savedContent) {
-        setContent(JSON.parse(savedContent));
+        setContent((prev) => ({ ...prev, ...JSON.parse(savedContent) }));
       }
     }
   }, [isEditing]);
+
+  // Fetch collections for dropdown
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await fetch("/api/collections");
+        if (response.ok) {
+          const data = await response.json();
+          setCollections(data);
+        }
+      } catch (err) {
+        console.error("Error fetching collections:", err);
+      }
+    };
+    fetchCollections();
+  }, []);
 
   // Auto-save effect with debounce
   useEffect(() => {
@@ -160,9 +179,13 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
     if (content.title.length < 50 || content.title.length > 60) {
       return setError("Title must be between 50 and 60 characters");
     }
-    if (!content.category) return setError("Category is required");
+    if (!content.collectionId && !content.category)
+      return setError("Category is required");
     if (!content.description) return setError("Description is required");
-    if (!content.content) return setError("Content is required");
+    const isContentEmpty =
+      !content.content ||
+      content.content.replace(/<[^>]*>/g, "").trim().length === 0;
+    if (isContentEmpty) return setError("Content is required");
     if (!content.keywords || content.keywords.length === 0)
       return setError("Keywords are required");
     if (!content.slug) return setError("Slug is required");
@@ -186,6 +209,8 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
           category: "",
           content: "",
           keywords: [],
+          collectionId: "",
+          status: "unpublished",
         });
         setClearEditor(true);
         setBlogCover(undefined);
@@ -241,9 +266,10 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
               <h2 className="text-xl font-semibold text-white">
                 Article Details
               </h2>
-              <span className="text-xs text-sky-400 font-mono transition-opacity duration-300">
-                {getSaveStatus()}
-              </span>
+              <div className="flex items-center gap-2 text-xs text-sky-400 font-mono transition-opacity duration-300">
+                {isSaving && <Loader2 className="w-3 h-3 animate-spin" />}
+                <span>{getSaveStatus()}</span>
+              </div>
             </div>
 
             {/* Title */}
@@ -296,33 +322,68 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                 }
               />
             </div>
+            {/* Category - Hidden if collection is selected */}
+            {!content.collectionId && (
+              <div className="space-y-2">
+                <label
+                  htmlFor="category"
+                  className="text-sm font-medium text-slate-300"
+                >
+                  Category
+                </label>
+                <select
+                  id="category"
+                  className="w-full bg-blue-900/50 border border-blue-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  value={content.category || ""}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      category: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="" disabled className="text-slate-500">
+                    Select a category
+                  </option>
+                  <option value="system-design">System Design</option>
+                  <option value="devops">DevOps</option>
+                  <option value="web-development">Web Development</option>
+                  <option value="mobile-development">Mobile Development</option>
+                  <option value="others">Others</option>
+                </select>
+              </div>
+            )}
 
-            {/* Category */}
-            <div className="space-y-2">
-              <label
-                htmlFor="category"
-                className="text-sm font-medium text-slate-300"
-              >
-                Category
-              </label>
-              <select
-                id="category"
-                className="w-full bg-blue-900/50 border border-blue-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={content.category}
-                onChange={(e) =>
-                  setContent((prev) => ({ ...prev, category: e.target.value }))
-                }
-              >
-                <option value="" disabled className="text-slate-500">
-                  Select a category
-                </option>
-                <option value="system-design">System Design</option>
-                <option value="devops">DevOps</option>
-                <option value="web-development">Web Development</option>
-                <option value="mobile-development">Mobile Development</option>
-                <option value="others">Others</option>
-              </select>
-            </div>
+            {/* Collection */}
+            {content.collectionId && (
+              <div className="space-y-2">
+                <label
+                  htmlFor="collection"
+                  className="text-sm font-medium text-slate-300"
+                >
+                  Collection
+                </label>
+                <select
+                  id="collection"
+                  className="w-full bg-blue-900/50 border border-blue-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  value={content.collectionId || ""}
+                  disabled={!!content.collectionId}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      collectionId: e.target.value,
+                    }))
+                  }
+                >
+                  <option value="">None</option>
+                  {collections.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
 
             {/* Description */}
             <div className="space-y-2">
@@ -443,8 +504,12 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
 
               <Button
                 type="submit"
-                disabled={loading}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2"
+                disabled={
+                  loading ||
+                  !content.content ||
+                  content.content.replace(/<[^>]*>/g, "").trim().length === 0
+                }
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading && <Loader2 className="w-4 h-4 animate-spin" />}
                 {loading
