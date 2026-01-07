@@ -4,28 +4,23 @@ import { validateRequest } from "@/auth";
 
 export async function GET(req: Request) {
   try {
-    const { user: loggedInUser } = await validateRequest();
-
-    if (!loggedInUser) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-      });
-    }
-
     const url = new URL(req.url);
-    const id = url.pathname.split("/").pop();
+    const idOrSlug = url.pathname.split("/").pop();
 
-    if (!id) {
-      return new Response(JSON.stringify({ error: "ID is required" }), {
+    if (!idOrSlug) {
+      return new Response(JSON.stringify({ error: "ID or Slug is required" }), {
         status: 400,
       });
     }
 
     const collection = await prisma.collection.findFirst({
-      where: { id, isDeleted: false },
+      where: {
+        OR: [{ id: idOrSlug }, { slug: idOrSlug }],
+        isDeleted: false,
+      },
       include: {
         articles: {
-          where: { isDeleted: false },
+          where: { isDeleted: false, status: "published" },
           orderBy: {
             createdAt: "asc",
           },
