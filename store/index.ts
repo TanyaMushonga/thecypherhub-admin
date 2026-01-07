@@ -14,7 +14,7 @@ export const useArticle = create<ArticleStore>((set) => ({
       slug: "",
       authorId: "",
       createdAt: "",
-      updateAt: "",
+      updatedAt: "",
       comments: [],
       status: "published",
     },
