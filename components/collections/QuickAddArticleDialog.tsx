@@ -24,10 +24,12 @@ import { useRouter } from "next/navigation";
 
 interface QuickAddArticleDialogProps {
   collectionId: string;
+  collectionCategory?: string;
 }
 
 export function QuickAddArticleDialog({
   collectionId,
+  collectionCategory,
 }: QuickAddArticleDialogProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -107,6 +109,7 @@ export function QuickAddArticleDialog({
       formData.append("keywords", JSON.stringify(newArtKeywords));
       formData.append("status", "unpublished");
       formData.append("collectionId", collectionId);
+      if (collectionCategory) formData.append("category", collectionCategory);
       if (newArtDate) formData.append("publishedAt", newArtDate);
       if (newArtCover) formData.append("coverImgUrl", newArtCover);
       formData.append("content", "");
