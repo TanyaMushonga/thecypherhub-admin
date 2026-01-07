@@ -21,6 +21,7 @@ declare interface Collection {
   id: string;
   name: string;
   description?: string;
+  category?: string;
   coverImgUrl?: string;
   slug: string;
   authorId: string;
