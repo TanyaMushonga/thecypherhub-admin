@@ -18,6 +18,9 @@ export async function GET(request: Request) {
     const comments = await prisma.comments.findMany({
       where: {
         articleId: articleId,
+        article: {
+          isDeleted: false,
+        },
       },
       orderBy: {
         createdAt: "desc",
