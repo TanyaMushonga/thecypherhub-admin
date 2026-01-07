@@ -1,4 +1,4 @@
-import { Plus, Home, Book, User, NotebookPen } from "lucide-react";
+import { Plus, Home, Book, User, NotebookPen, BookOpen } from "lucide-react";
 
 import {
   Sidebar,
@@ -33,6 +33,11 @@ const items = [
     icon: Plus,
   },
   {
+    title: "Collections",
+    url: "/collections",
+    icon: BookOpen,
+  },
+  {
     title: "Subscribers",
     url: "/subscribers",
     icon: User,
@@ -40,7 +45,7 @@ const items = [
   {
     title: "Notes",
     url: "/notes",
-    icon: NotebookPen ,
+    icon: NotebookPen,
   },
 ];
 
