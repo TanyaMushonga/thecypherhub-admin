@@ -1,5 +1,4 @@
 import prisma from "../../../lib/prisma";
-import { validateRequest } from "@/auth";
 import NodeCache from "node-cache";
 
 const cache = new NodeCache({ stdTTL: 518400 });
@@ -26,11 +25,9 @@ export async function GET(request: Request) {
     const skip = (page - 1) * pageSize;
     const take = pageSize;
 
-    const { user: loggedInUser } = await validateRequest();
-
     const where = {
       isDeleted: false,
-      ...(!loggedInUser ? { status: "published" as const } : {}),
+      status: "published",
       ...(search
         ? {
             OR: [
