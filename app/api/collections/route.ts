@@ -6,14 +6,6 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const { user: loggedInUser } = await validateRequest();
-
-    if (!loggedInUser) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-      });
-    }
-
     const collections = await prisma.collection.findMany({
       where: { isDeleted: false },
       orderBy: {
@@ -23,6 +15,7 @@ export async function GET() {
         articles: {
           where: {
             isDeleted: false,
+            status: "published",
           },
         },
       },
