@@ -10,7 +10,7 @@ declare interface Article {
   slug: string;
   authorId: string;
   createdAt: string;
-  updateAt: string;
+  updatedAt: string;
   comments: Comment[];
   collectionId?: string;
   status: "published" | "unpublished";
