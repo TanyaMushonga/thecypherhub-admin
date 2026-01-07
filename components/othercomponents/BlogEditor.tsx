@@ -238,11 +238,17 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
   return (
     <div className="w-full max-w-7xl mx-auto p-4">
       <Link
-        href="/articles"
+        href={
+          content.collectionId
+            ? `/collections/${content.collectionId}`
+            : "/collections"
+        }
         className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-6"
       >
         <ArrowLeft className="w-4 h-4" />
-        <span>Back to Articles</span>
+        <span>
+          {content.collectionId ? "Back to Collection" : "Back to Collections"}
+        </span>
       </Link>
 
       <form
