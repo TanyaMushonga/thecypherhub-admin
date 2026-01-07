@@ -24,6 +24,7 @@ function AddArticlePage() {
     description: string;
     slug: string;
   } | null>(null);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleSubmit = async (data: ArticleFormData, coverImage?: File) => {
     const formData = new FormData();
@@ -33,49 +34,56 @@ function AddArticlePage() {
     formData.append("content", data.content);
     formData.append("keywords", JSON.stringify(data.keywords));
     formData.append("slug", data.slug);
+    formData.append("collectionId", data.collectionId || "");
+    formData.append("status", data.status);
 
     if (coverImage) {
       formData.append("coverImgUrl", coverImage);
     }
 
-    const response = await fetch("/api/add-blog", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      setIsSubmitting(true);
+      const response = await fetch("/api/add-blog", {
+        method: "POST",
+        body: formData,
+      });
 
-    if (!response.ok) {
-      let errorMessage = "Failed to create article";
-      try {
-        const errorData = await response.json();
-        if (
-          errorData.error &&
-          errorData.error.code === "P2002" &&
-          errorData.error.meta?.target?.includes("slug")
-        ) {
-          errorMessage =
-            "An article with this slug already exists. Please choose a different slug.";
-        } else if (errorData.message) {
-          errorMessage = errorData.message;
-        } else if (typeof errorData.error === "string") {
-          errorMessage = errorData.error;
+      if (!response.ok) {
+        let errorMessage = "Failed to create article";
+        try {
+          const errorData = await response.json();
+          if (
+            errorData.error &&
+            errorData.error.code === "P2002" &&
+            errorData.error.meta?.target?.includes("slug")
+          ) {
+            errorMessage =
+              "An article with this slug already exists. Please choose a different slug.";
+          } else if (errorData.message) {
+            errorMessage = errorData.message;
+          } else if (typeof errorData.error === "string") {
+            errorMessage = errorData.error;
+          }
+        } catch {
+          const textError = await response.text();
+          if (textError) errorMessage = textError;
         }
-      } catch {
-        const textError = await response.text();
-        if (textError) errorMessage = textError;
+        throw new Error(errorMessage);
       }
-      throw new Error(errorMessage);
+
+      // Success: Ask to send notifications
+      toast.success("Blog created successfully!");
+
+      // Set article data for email notification using the actual description
+      setArticleData({
+        title: data.title,
+        description: data.description,
+        slug: data.slug,
+      });
+      setShowEmailDialog(true);
+    } finally {
+      setIsSubmitting(false);
     }
-
-    // Success: Ask to send notifications
-    toast.success("Blog created successfully!");
-
-    // Set article data for email notification using the actual description
-    setArticleData({
-      title: data.title,
-      description: data.description,
-      slug: data.slug,
-    });
-    setShowEmailDialog(true);
   };
 
   const handleSendNotification = async () => {
@@ -155,7 +163,7 @@ function AddArticlePage() {
 
   return (
     <ScrollArea className="bg-primary pt-4 h-full">
-      <BlogEditor onSubmit={handleSubmit} />
+      <BlogEditor onSubmit={handleSubmit} loading={isSubmitting} />
 
       <AlertDialog open={showEmailDialog} onOpenChange={setShowEmailDialog}>
         <AlertDialogContent>
