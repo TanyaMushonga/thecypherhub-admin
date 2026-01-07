@@ -21,6 +21,9 @@ export async function GET() {
       },
       include: {
         articles: {
+          where: {
+            isDeleted: false,
+          },
           select: {
             id: true,
             title: true,
