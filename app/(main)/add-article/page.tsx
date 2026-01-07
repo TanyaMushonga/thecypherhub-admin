@@ -35,7 +35,11 @@ function AddArticlePage() {
     formData.append("keywords", JSON.stringify(data.keywords));
     formData.append("slug", data.slug);
     formData.append("collectionId", data.collectionId || "");
-    formData.append("status", data.status);
+
+    // Auto-publish if content is provided
+    const hasContent =
+      data.content && data.content.replace(/<[^>]*>/g, "").trim().length > 0;
+    formData.append("status", hasContent ? "published" : data.status);
 
     if (coverImage) {
       formData.append("coverImgUrl", coverImage);
