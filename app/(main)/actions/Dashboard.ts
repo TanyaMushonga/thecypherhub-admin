@@ -13,7 +13,9 @@ export async function getDashboardStats() {
     ] = await Promise.all([
       prisma.subscribers.count(),
       prisma.subscribers.count({ where: { status: 1 } }),
-      prisma.articles.count({ where: { isDeleted: false } }),
+      prisma.articles.count({
+        where: { isDeleted: false, status: "published" },
+      }),
       prisma.comments.count(),
       prisma.collection.count({ where: { isDeleted: false } }),
     ]);
