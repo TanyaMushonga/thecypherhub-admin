@@ -16,6 +16,7 @@ export const useArticle = create<ArticleStore>((set) => ({
       createdAt: "",
       updateAt: "",
       comments: [],
+      status: "published",
     },
   ],
   setBlog: (blog: Article[]) => set({ blog }),
