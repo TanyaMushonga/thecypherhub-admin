@@ -4,8 +4,6 @@ import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import {
   CheckCircle2,
   Circle,
@@ -13,9 +11,21 @@ import {
   ChevronRight,
   Loader2,
   Image as ImageIcon,
+  Trash2,
 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useRouter } from "next/navigation";
-import { toggleArticlePublication } from "@/app/(main)/actions/Collections";
+import axios from "axios";
 import toast from "react-hot-toast";
 
 interface ArticleRoadmapProps {
@@ -24,24 +34,19 @@ interface ArticleRoadmapProps {
 
 export function ArticleRoadmap({ articles }: ArticleRoadmapProps) {
   const router = useRouter();
-  const [toggleLoading, setToggleLoading] = useState<string | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
-  const handleToggle = async (slug: string, currentStatus: string) => {
-    const newStatus =
-      currentStatus === "published" ? "unpublished" : "published";
-    setToggleLoading(slug);
+  const handleDelete = async (slug: string) => {
+    setDeleteLoading(slug);
     try {
-      await toggleArticlePublication(
-        slug,
-        newStatus as "published" | "unpublished"
-      );
-      toast.success(`Article ${newStatus} successfully`);
+      await axios.delete(`/api/blog/${slug}`);
+      toast.success("Article moved to trash");
       router.refresh();
     } catch (err) {
       console.error(err);
-      toast.error("Failed to update status");
+      toast.error("Failed to delete article");
     } finally {
-      setToggleLoading(null);
+      setDeleteLoading(null);
     }
   };
 
@@ -101,27 +106,7 @@ export function ArticleRoadmap({ articles }: ArticleRoadmapProps) {
               </div>
             </div>
 
-            <div className="flex items-center justify-between sm:justify-end gap-4 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-blue-900/30">
-              <div className="flex items-center gap-2">
-                <Label
-                  htmlFor={`pub-toggle-${article.id}`}
-                  className="text-[10px] text-slate-500 uppercase tracking-wider"
-                >
-                  {article.status === "published" ? "Published" : "Draft"}
-                </Label>
-                {toggleLoading === article.slug ? (
-                  <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-                ) : (
-                  <Switch
-                    id={`pub-toggle-${article.id}`}
-                    checked={article.status === "published"}
-                    onCheckedChange={() =>
-                      handleToggle(article.slug, article.status)
-                    }
-                    className="scale-75"
-                  />
-                )}
-              </div>
+            <div className="flex items-center justify-end gap-2 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-blue-900/30">
               <Button
                 onClick={() => router.push(`/article/${article.slug}/edit`)}
                 size="sm"
@@ -132,6 +117,43 @@ export function ArticleRoadmap({ articles }: ArticleRoadmapProps) {
                   : "Finish Content"}
                 <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
+
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    disabled={deleteLoading === article.slug}
+                    className="h-8 px-3 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                  >
+                    {deleteLoading === article.slug ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4" />
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-slate-900 border-slate-800 text-white">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Article?</AlertDialogTitle>
+                    <AlertDialogDescription className="text-slate-400">
+                      This will move &quot;{article.title}&quot; to trash. You
+                      can restore it later from the trash page.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-slate-800 text-white border-slate-700 hover:bg-slate-700">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={() => handleDelete(article.slug)}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           </CardContent>
         </Card>
