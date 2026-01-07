@@ -28,6 +28,7 @@ export function NewCollectionDialog() {
     name: "",
     description: "",
     slug: "",
+    category: "",
   });
   const [coverFile, setCoverFile] = useState<File | null>(null);
 
@@ -60,6 +61,7 @@ export function NewCollectionDialog() {
       data.append("name", formData.name);
       data.append("description", formData.description);
       data.append("slug", formData.slug);
+      data.append("category", formData.category);
       if (coverFile) {
         data.append("coverImgUrl", coverFile);
       }
@@ -67,7 +69,7 @@ export function NewCollectionDialog() {
       await axios.post("/api/collections", data);
       toast.success("Collection created successfully");
       setIsOpen(false);
-      setFormData({ name: "", description: "", slug: "" });
+      setFormData({ name: "", description: "", slug: "", category: "" });
       setCoverFile(null);
       router.refresh();
     } catch (err) {
@@ -139,6 +141,27 @@ export function NewCollectionDialog() {
               className="bg-blue-950/50 border-blue-900 focus:ring-blue-500 placeholder:text-slate-500 h-24"
               placeholder="What is this collection about?"
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <select
+              id="category"
+              value={formData.category}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
+              className="w-full bg-blue-950/50 border border-blue-900 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              <option value="" disabled className="text-slate-500">
+                Select a category
+              </option>
+              <option value="System Design">System Design</option>
+              <option value="DevOps">DevOps</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Cyber Security">Cyber Security</option>
+              <option value="Mobile Development">Mobile Development</option>
+            </select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="cover">Cover Image (Optional)</Label>
