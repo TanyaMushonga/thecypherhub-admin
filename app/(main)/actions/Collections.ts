@@ -29,7 +29,7 @@ export async function getCollectionById(
     where: { id, isDeleted: false },
     include: {
       articles: {
-        where: { isDeleted: false, status: "published" },
+        where: { isDeleted: false },
         orderBy: { createdAt: "asc" },
       },
     },
