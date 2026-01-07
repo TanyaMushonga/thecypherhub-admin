@@ -15,7 +15,6 @@ export async function GET() {
         articles: {
           where: {
             isDeleted: false,
-            status: "published",
           },
         },
       },
