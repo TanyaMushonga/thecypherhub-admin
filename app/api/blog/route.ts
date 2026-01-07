@@ -27,6 +27,7 @@ export async function GET(request: Request) {
 
     const where = {
       status: "published" as const,
+      isDeleted: false,
       ...(search
         ? {
             OR: [
