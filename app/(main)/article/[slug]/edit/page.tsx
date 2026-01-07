@@ -46,7 +46,11 @@ export default function EditArticlePage() {
       formData.append("category", data.category);
       formData.append("content", data.content);
       formData.append("keywords", JSON.stringify(data.keywords));
-      formData.append("status", data.status);
+
+      // Auto-publish if content is provided
+      const hasContent =
+        data.content && data.content.replace(/<[^>]*>/g, "").trim().length > 0;
+      formData.append("status", hasContent ? "published" : data.status);
       if (data.collectionId) {
         formData.append("collectionId", data.collectionId);
       }
