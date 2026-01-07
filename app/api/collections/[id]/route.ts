@@ -20,7 +20,7 @@ export async function GET(req: Request) {
       },
       include: {
         articles: {
-          where: { isDeleted: false, status: "published" },
+          where: { isDeleted: false },
           orderBy: {
             createdAt: "asc",
           },
