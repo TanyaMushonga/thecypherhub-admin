@@ -31,6 +31,20 @@ export async function POST(req: Request) {
     const status = (formData.get("status") as string) || "unpublished";
     const publishedAtStr = formData.get("publishedAt") as string | null;
     const coverImgFile = formData.get("coverImgUrl") as File | null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (publishedAtStr) {
+      const selectedDate = new Date(publishedAtStr);
+      if (selectedDate < today) {
+        return new Response(
+          JSON.stringify({
+            message: "Planned/Publish Date cannot be in the past",
+          }),
+          { status: 400 }
+        );
+      }
+    }
 
     if (!title || title.length < 50 || title.length > 60) {
       return new Response(
