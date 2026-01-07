@@ -24,11 +24,6 @@ export async function GET() {
           where: {
             isDeleted: false,
           },
-          select: {
-            id: true,
-            title: true,
-            status: true,
-          },
         },
       },
     });
