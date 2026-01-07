@@ -6,16 +6,6 @@ import { notFound, useParams, useRouter } from "next/navigation";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 
-type ArticleFormData = {
-  title: string;
-  slug: string;
-  description: string;
-  category: string;
-  content: string;
-  keywords: string[];
-  coverImgUrl?: string; // Add this to match BlogEditor interface
-};
-
 function UpdateBlog() {
   const { slug } = useParams();
   const router = useRouter();
@@ -53,6 +43,8 @@ function UpdateBlog() {
       formData.append("category", data.category);
       formData.append("content", data.content);
       formData.append("keywords", JSON.stringify(data.keywords));
+      formData.append("collectionId", data.collectionId || "");
+      formData.append("status", data.status);
 
       if (coverImage) {
         formData.append("coverImgUrl", coverImage);
