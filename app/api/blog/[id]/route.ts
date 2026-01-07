@@ -14,8 +14,8 @@ export async function GET(req: Request) {
       });
     }
 
-    const blog = await prisma.articles.findUnique({
-      where: { slug: slug },
+    const blog = await prisma.articles.findFirst({
+      where: { slug: slug, isDeleted: false },
       include: {
         comments: {
           orderBy: {
@@ -191,12 +191,9 @@ export async function DELETE(req: Request) {
         status: 404,
       });
     }
-    if (blog.coverImgUrl) {
-      await del(blog.coverImgUrl);
-    }
-
-    await prisma.articles.delete({
+    await prisma.articles.update({
       where: { slug: slug, authorId: loggedInUser.id },
+      data: { isDeleted: true },
     });
 
     revalidatePath("/blog");
