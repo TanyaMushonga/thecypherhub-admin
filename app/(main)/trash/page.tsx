@@ -26,11 +26,12 @@ export default function TrashPage() {
     try {
       setLoading(true);
       const res = await axios.get("/api/trash");
-      const { articles, collections } = res.data;
+      const articles = res.data.articles as Article[];
+      const collections = res.data.collections as Collection[];
 
       const combinedItems: TrashItem[] = [
-        ...articles.map((a: any) => ({ ...a, type: "article" })),
-        ...collections.map((c: any) => ({ ...c, type: "collection" })),
+        ...articles.map((a) => ({ ...a, type: "article" as const })),
+        ...collections.map((c) => ({ ...c, type: "collection" as const })),
       ].sort(
         (a, b) =>
           new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -38,6 +39,7 @@ export default function TrashPage() {
 
       setItems(combinedItems);
     } catch (error) {
+      console.error("Fetch trash error:", error);
       toast.error("Failed to fetch trash items");
     } finally {
       setLoading(false);
@@ -54,6 +56,7 @@ export default function TrashPage() {
       setItems((prev) => prev.filter((item) => item.id !== id));
       toast.success("Item restored successfully");
     } catch (error) {
+      console.error("Restore error:", error);
       toast.error("Failed to restore item");
     }
   };
