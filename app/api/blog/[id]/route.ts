@@ -14,13 +14,11 @@ export async function GET(req: Request) {
       });
     }
 
-    const { user: loggedInUser } = await validateRequest();
-
     const blog = await prisma.articles.findFirst({
       where: {
         slug: slug,
         isDeleted: false,
-        ...(!loggedInUser ? { status: "published" } : {}),
+        status: "published",
       },
       include: {
         comments: {
