@@ -14,10 +14,10 @@ export async function getDashboardStats() {
       prisma.subscribers.count(),
       prisma.subscribers.count({ where: { status: 1 } }),
       prisma.articles.count({
-        where: { isDeleted: false, status: "published" },
+        where: { status: "published" },
       }),
       prisma.comments.count(),
-      prisma.collection.count({ where: { isDeleted: false } }),
+      prisma.collection.count(),
     ]);
 
     return {

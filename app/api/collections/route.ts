@@ -1,22 +1,18 @@
 import prisma from "../../../lib/prisma";
 import { validateRequest } from "@/auth";
 import { put } from "@vercel/blob";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
     const collections = await prisma.collection.findMany({
-      where: { isDeleted: false },
       orderBy: {
         createdAt: "desc",
       },
       include: {
-        articles: {
-          where: {
-            isDeleted: false,
-          },
-        },
+        articles: true,
       },
     });
 
@@ -66,6 +62,23 @@ export async function POST(req: Request) {
       coverImgUrl = blob.url;
     }
 
+    // Check if collection with same name or slug already exists for this user
+    const existingCollection = await prisma.collection.findFirst({
+      where: {
+        OR: [{ authorId: loggedInUser.id, name }, { slug }],
+      },
+    });
+
+    if (existingCollection) {
+      const field = existingCollection.slug === slug ? "Slug" : "Name";
+      return new Response(
+        JSON.stringify({
+          error: `A collection with this ${field} already exists.`,
+        }),
+        { status: 400 }
+      );
+    }
+
     const collection = await prisma.collection.create({
       data: {
         name,
@@ -76,6 +89,10 @@ export async function POST(req: Request) {
         authorId: loggedInUser.id,
       },
     });
+
+    revalidatePath("/collections");
+    revalidatePath("/articles");
+    revalidatePath("/");
 
     return new Response(JSON.stringify(collection), {
       status: 201,

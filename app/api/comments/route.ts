@@ -23,7 +23,6 @@ export async function GET(request: Request) {
         articleId: articleId,
         article: {
           is: {
-            isDeleted: false,
             ...(!loggedInUser ? { status: "published" } : {}),
           },
         },
