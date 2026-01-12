@@ -50,7 +50,10 @@ export default async function CollectionDetailPage({ params }: PageProps) {
               <CheckCircle2 className="w-6 h-6 text-blue-500" />
               Article Roadmap
             </h2>
-            <QuickAddArticleDialog collectionId={collection.id} />
+            <QuickAddArticleDialog
+              collectionId={collection.id}
+              collectionCategory={collection.category}
+            />
           </div>
           <ArticleRoadmap articles={collection.articles} />
         </div>

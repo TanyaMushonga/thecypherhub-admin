@@ -45,6 +45,7 @@ export async function POST(req: Request) {
     const formData = await req.formData();
     const name = formData.get("name") as string;
     const description = formData.get("description") as string | null;
+    const category = formData.get("category") as string | null;
     const slug = formData.get("slug") as string;
     const coverImgFile = formData.get("coverImgUrl") as File | null;
 
@@ -70,6 +71,7 @@ export async function POST(req: Request) {
         name,
         description,
         slug,
+        category,
         coverImgUrl,
         authorId: loggedInUser.id,
       },

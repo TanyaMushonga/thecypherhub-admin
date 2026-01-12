@@ -104,6 +104,7 @@ model Collection {
   id          String     @id @default(uuid()) @map("_id")
   name        String
   description String?
+  category    String?
   coverImgUrl String?
   slug        String     @unique
   authorId    String
