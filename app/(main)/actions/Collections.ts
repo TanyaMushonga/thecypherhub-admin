@@ -13,7 +13,7 @@ export async function getCollections(): Promise<Collection[]> {
     orderBy: { createdAt: "desc" },
     include: {
       articles: {
-        where: { isDeleted: false, status: "published" },
+        where: { isDeleted: false},
       },
     },
   })) as unknown as Collection[];
