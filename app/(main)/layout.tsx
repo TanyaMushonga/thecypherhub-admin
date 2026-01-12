@@ -25,7 +25,7 @@ export default async function Layout({
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
       <AppSidebar />
-      <main className="bg-primary h-[100vh] w-full">
+      <main className="bg-primary min-h-screen w-full">
         <div className="flex md:items-center w-full bg-blue-950 p-5">
           <SidebarTrigger className="text-white" />
           <div className="flex flex-col gap-4 md:flex-row justify-between items-center md:mx-10 w-full">
