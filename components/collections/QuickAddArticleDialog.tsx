@@ -148,6 +148,7 @@ export function QuickAddArticleDialog({
     <Dialog
       open={isOpen}
       onOpenChange={(open) => {
+        if (open && addSuccess) resetQuickAdd();
         setIsOpen(open);
         if (!open) resetQuickAdd();
       }}
@@ -211,23 +212,26 @@ export function QuickAddArticleDialog({
               <div className="flex gap-4 w-full">
                 <Button
                   variant="outline"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    resetQuickAdd();
+                  }}
                   className="flex-1 border-slate-800 bg-transparent hover:bg-slate-800 whitespace-nowrap overflow-hidden text-ellipsis"
                 >
                   Dismiss
                 </Button>
                 <Button
-                  onClick={() =>
-                    router.push(
-                      `/article/${
-                        newArtSlug ||
-                        newArtTitle
-                          .toLowerCase()
-                          .replace(/ /g, "-")
-                          .replace(/[^\w-]+/g, "")
-                      }/edit`
-                    )
-                  }
+                  onClick={() => {
+                    const targetSlug =
+                      newArtSlug ||
+                      newArtTitle
+                        .toLowerCase()
+                        .replace(/ /g, "-")
+                        .replace(/[^\w-]+/g, "");
+                    setIsOpen(false);
+                    resetQuickAdd();
+                    router.push(`/article/${targetSlug}/edit`);
+                  }}
                   className="flex-1 bg-blue-600 hover:bg-blue-500 shadow-lg shadow-blue-600/20 whitespace-nowrap overflow-hidden text-ellipsis"
                 >
                   Open Editor
