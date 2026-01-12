@@ -100,11 +100,11 @@ export async function POST(req: Request) {
 
     // Check if slug already exists
     if (slug) {
-      const existingArticle = await prisma.articles.findUnique({
+      const existingArticleBySlug = await prisma.articles.findUnique({
         where: { slug },
       });
 
-      if (existingArticle) {
+      if (existingArticleBySlug) {
         return new Response(
           JSON.stringify({
             message: "An article with this slug already exists.",
@@ -116,6 +116,20 @@ export async function POST(req: Request) {
           { status: 400 }
         );
       }
+    }
+
+    // Check if title already exists for this author
+    const existingArticleByTitle = await prisma.articles.findFirst({
+      where: { authorId: loggedInUser.id, title },
+    });
+
+    if (existingArticleByTitle) {
+      return new Response(
+        JSON.stringify({
+          message: "You already have an article with this title.",
+        }),
+        { status: 400 }
+      );
     }
 
     await prisma.articles.create({

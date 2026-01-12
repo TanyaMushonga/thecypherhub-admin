@@ -17,7 +17,6 @@ export async function GET(req: Request) {
     const blog = await prisma.articles.findFirst({
       where: {
         slug: slug,
-        isDeleted: false,
         status: "published",
       },
       include: {
@@ -195,9 +194,8 @@ export async function DELETE(req: Request) {
         status: 404,
       });
     }
-    await prisma.articles.update({
+    await prisma.articles.delete({
       where: { slug: slug, authorId: loggedInUser.id },
-      data: { isDeleted: true },
     });
 
     revalidatePath("/blog");

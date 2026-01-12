@@ -40,7 +40,7 @@ export function ArticleRoadmap({ articles }: ArticleRoadmapProps) {
     setDeleteLoading(slug);
     try {
       await axios.delete(`/api/blog/${slug}`);
-      toast.success("Article moved to trash");
+      toast.success("Article deleted");
       router.refresh();
     } catch (err) {
       console.error(err);
@@ -137,8 +137,8 @@ export function ArticleRoadmap({ articles }: ArticleRoadmapProps) {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete Article?</AlertDialogTitle>
                     <AlertDialogDescription className="text-slate-400">
-                      This will move &quot;{article.title}&quot; to trash. You
-                      can restore it later from the trash page.
+                      This will permanently delete &quot;{article.title}&quot;.
+                      This action cannot be undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

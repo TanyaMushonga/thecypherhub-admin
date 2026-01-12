@@ -1,6 +1,7 @@
 import prisma from "../../../../lib/prisma";
 import { put, del } from "@vercel/blob";
 import { validateRequest } from "@/auth";
+import { revalidatePath } from "next/cache";
 
 export async function GET(req: Request) {
   try {
@@ -16,11 +17,9 @@ export async function GET(req: Request) {
     const collection = await prisma.collection.findFirst({
       where: {
         OR: [{ id: idOrSlug }, { slug: idOrSlug }],
-        isDeleted: false,
       },
       include: {
         articles: {
-          where: { isDeleted: false },
           orderBy: {
             createdAt: "asc",
           },
@@ -111,6 +110,10 @@ export async function PATCH(req: Request) {
       },
     });
 
+    revalidatePath("/collections");
+    revalidatePath("/articles");
+    revalidatePath("/");
+
     return new Response(JSON.stringify(collection), {
       status: 200,
       headers: { "Content-Type": "application/json" },
@@ -142,17 +145,19 @@ export async function DELETE(req: Request) {
       });
     }
 
-    // Soft delete the collection
-    await prisma.collection.update({
-      where: { id, authorId: loggedInUser.id },
-      data: { isDeleted: true },
+    // Cascade hard delete to all articles in this collection
+    await prisma.articles.deleteMany({
+      where: { collectionId: id, authorId: loggedInUser.id },
     });
 
-    // Cascade soft delete to all articles in this collection
-    await prisma.articles.updateMany({
-      where: { collectionId: id, authorId: loggedInUser.id },
-      data: { isDeleted: true },
+    // Hard delete the collection
+    await prisma.collection.delete({
+      where: { id, authorId: loggedInUser.id },
     });
+
+    revalidatePath("/collections");
+    revalidatePath("/articles");
+    revalidatePath("/");
 
     return new Response(
       JSON.stringify({ message: "Collection deleted successfully" }),

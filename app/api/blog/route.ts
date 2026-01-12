@@ -26,7 +26,6 @@ export async function GET(request: Request) {
     const take = pageSize;
 
     const where = {
-      isDeleted: false,
       status: "published",
       ...(search
         ? {

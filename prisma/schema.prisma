@@ -57,7 +57,6 @@ model Articles {
   collection   Collection? @relation(fields: [collectionId], references: [id])
   status       String     @default("unpublished") // published | unpublished
   publishedAt  DateTime?
-  isDeleted    Boolean    @default(false)
 
   @@index([createdAt])
   @@map("articles")
@@ -112,7 +111,7 @@ model Collection {
   articles    Articles[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
-  isDeleted   Boolean    @default(false)
 
+  @@unique([authorId, name])
   @@map("collections")
 }

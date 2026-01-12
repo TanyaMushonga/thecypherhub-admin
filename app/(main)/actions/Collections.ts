@@ -9,12 +9,9 @@ export async function getCollections(): Promise<Collection[]> {
   if (!loggedInUser) throw new Error("Unauthorized");
 
   return (await prisma.collection.findMany({
-    where: { isDeleted: false },
     orderBy: { createdAt: "desc" },
     include: {
-      articles: {
-        where: { isDeleted: false},
-      },
+      articles: true,
     },
   })) as unknown as Collection[];
 }
@@ -26,10 +23,9 @@ export async function getCollectionById(
   if (!loggedInUser) throw new Error("Unauthorized");
 
   return (await prisma.collection.findFirst({
-    where: { id, isDeleted: false },
+    where: { id },
     include: {
       articles: {
-        where: { isDeleted: false },
         orderBy: { createdAt: "asc" },
       },
     },
