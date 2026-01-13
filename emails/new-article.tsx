@@ -21,6 +21,10 @@ interface NotificationEmailProps {
   articleDescription: string;
   articleSlug: string;
   email: string;
+  collectionName?: string;
+  collectionDescription?: string;
+  nextArticleTitle?: string;
+  nextArticleDate?: string;
 }
 
 export const NotificationEmail = ({
@@ -28,6 +32,10 @@ export const NotificationEmail = ({
   articleDescription,
   articleSlug,
   email,
+  collectionName,
+  collectionDescription,
+  nextArticleTitle,
+  nextArticleDate,
 }: NotificationEmailProps) => {
   const articleLink = `https://www.thecypherhub.tech/blog/${articleSlug}`;
 
@@ -81,6 +89,34 @@ export const NotificationEmail = ({
                 Read More
               </Link>
             </Section>
+
+            {collectionName && (
+              <Section style={collectionInfo}>
+                <Text style={collectionText}>
+                  Part of the <strong>{collectionName}</strong> Series
+                </Text>
+                {collectionDescription && (
+                  <Text style={collectionDesc}>{collectionDescription}</Text>
+                )}
+              </Section>
+            )}
+
+            {nextArticleTitle && (
+              <Section style={nextArticleCard}>
+                <Heading as="h4" style={nextTitle}>
+                  Coming Soon: Next in Series
+                </Heading>
+                <Text style={nextArticleText}>
+                  <strong>{nextArticleTitle}</strong>
+                </Text>
+                {nextArticleDate && (
+                  <Text style={nextDate}>
+                    Planned for:{" "}
+                    {new Date(nextArticleDate).toLocaleDateString()}
+                  </Text>
+                )}
+              </Section>
+            )}
 
             <Row>
               <Hr
@@ -322,6 +358,56 @@ const button = {
   textAlign: "center" as const,
   display: "inline-block",
   padding: "8px 16px",
+};
+
+const collectionInfo = {
+  padding: "12px",
+  backgroundColor: "#f0f7ff",
+  borderRadius: "6px",
+  border: "1px solid #bfdbfe",
+  marginTop: "10px",
+};
+
+const collectionText = {
+  fontSize: "14px",
+  color: "#1e40af",
+  margin: "0 0 4px 0",
+};
+
+const collectionDesc = {
+  fontSize: "13px",
+  color: "#374151",
+  margin: "0",
+  lineHeight: "18px",
+};
+
+const nextArticleCard = {
+  padding: "12px",
+  backgroundColor: "#f9fafb",
+  borderRadius: "6px",
+  border: "1px dashed #d1d5db",
+  marginTop: "15px",
+};
+
+const nextTitle = {
+  fontSize: "13px",
+  fontWeight: "bold",
+  textTransform: "uppercase" as const,
+  color: "#6b7280",
+  margin: "0 0 8px 0",
+  letterSpacing: "0.05em",
+};
+
+const nextArticleText = {
+  fontSize: "15px",
+  color: "#111827",
+  margin: "0 0 4px 0",
+};
+
+const nextDate = {
+  fontSize: "12px",
+  color: "#6b7280",
+  margin: "0",
 };
 
 const footer = {

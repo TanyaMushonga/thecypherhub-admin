@@ -287,7 +287,16 @@ export const sendNoteBatch = async (
 
 export const sendArticleNotificationBatch = async (
   recipients: string[],
-  article: { title: string; description: string; slug: string; content: string }
+  article: {
+    title: string;
+    description: string;
+    slug: string;
+    content: string;
+    collectionName?: string;
+    collectionDescription?: string;
+    nextArticleTitle?: string;
+    nextArticleDate?: string;
+  }
 ) => {
   try {
     const batchData = recipients.map((email) => ({
@@ -299,6 +308,10 @@ export const sendArticleNotificationBatch = async (
         articleDescription: article.description,
         articleSlug: article.slug,
         email,
+        collectionName: article.collectionName,
+        collectionDescription: article.collectionDescription,
+        nextArticleTitle: article.nextArticleTitle,
+        nextArticleDate: article.nextArticleDate,
       }),
     }));
 

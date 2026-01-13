@@ -154,14 +154,45 @@ export async function PATCH(req: Request) {
       data: updatedData,
     });
 
+    let publicationMetadata = null;
+    if (blog.status === "unpublished" && status === "published") {
+      // Transitioned to published, fetch metadata for notifications
+      const collection = updatedBlog.collectionId
+        ? await prisma.collection.findUnique({
+            where: { id: updatedBlog.collectionId },
+          })
+        : null;
+
+      const nextArticle = updatedBlog.collectionId
+        ? await prisma.articles.findFirst({
+            where: {
+              collectionId: updatedBlog.collectionId,
+              status: "unpublished",
+              createdAt: { gt: blog.createdAt },
+            },
+            orderBy: { createdAt: "asc" },
+          })
+        : null;
+
+      publicationMetadata = {
+        collectionName: collection?.name,
+        collectionDescription: collection?.description,
+        nextArticleTitle: nextArticle?.title,
+        nextArticleDate: nextArticle?.publishedAt || nextArticle?.createdAt, // Use planned date if available, otherwise creation date
+      };
+    }
+
     revalidatePath("/blog");
     revalidatePath(`/blog/${slug}`);
     revalidatePath("/api/blogs");
     revalidatePath(`/api/blog/${slug}`);
 
-    return new Response(JSON.stringify(updatedBlog), {
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({ ...updatedBlog, publicationMetadata }),
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     console.error("Error updating blog:", error);
     return new Response(
