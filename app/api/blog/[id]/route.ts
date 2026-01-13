@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 
 export async function GET(req: Request) {
   try {
+    const { user: loggedInUser } = await validateRequest();
     const url = new URL(req.url);
     const slug = url.pathname.split("/").pop();
 
@@ -14,11 +15,17 @@ export async function GET(req: Request) {
       });
     }
 
+    const where: { slug: string; status?: string } = {
+      slug: slug,
+    };
+
+    // If not logged in, only show published articles
+    if (!loggedInUser) {
+      where.status = "published";
+    }
+
     const blog = await prisma.articles.findFirst({
-      where: {
-        slug: slug,
-        status: "published",
-      },
+      where,
       include: {
         comments: {
           orderBy: {
