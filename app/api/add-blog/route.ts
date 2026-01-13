@@ -132,16 +132,44 @@ export async function POST(req: Request) {
       );
     }
 
-    await prisma.articles.create({
+    const createdArticle = await prisma.articles.create({
       data,
+      include: { collection: true },
     });
+
+    let publicationMetadata = null;
+    if (status === "published") {
+      const collection = createdArticle.collection;
+
+      const nextArticle = createdArticle.collectionId
+        ? await prisma.articles.findFirst({
+            where: {
+              collectionId: createdArticle.collectionId,
+              status: "unpublished",
+              createdAt: { gt: createdArticle.createdAt },
+            },
+            orderBy: { createdAt: "asc" },
+          })
+        : null;
+
+      publicationMetadata = {
+        collectionName: collection?.name,
+        collectionDescription: collection?.description,
+        nextArticleTitle: nextArticle?.title,
+        nextArticleDate: nextArticle?.publishedAt || nextArticle?.createdAt,
+      };
+    }
 
     revalidatePath("/blog");
     revalidatePath(`/blog/${slug}`);
     revalidatePath("/api/blogs");
 
     return new Response(
-      JSON.stringify({ message: "Blog created successfully" }),
+      JSON.stringify({
+        ...createdArticle,
+        publicationMetadata,
+        message: "Blog created successfully",
+      }),
       {
         status: 201,
       }

@@ -34,7 +34,9 @@ export const formatDate = (createdAt: Date) => {
 
 export function calculateReadTime(content: string): string {
   const wordsPerMinute = 200; // Average reading speed
-  const words = content.trim().split(/\s+/).length;
+  // Strip HTML tags to get plain text for word counting
+  const plainText = content.replace(/<[^>]*>/g, " ");
+  const words = plainText.trim().split(/\s+/).length;
   const readTime = Math.ceil(words / wordsPerMinute);
   return `${readTime} min read`;
 }

@@ -15,15 +15,21 @@ import {
   AlertDialogTitle,
 } from "../../../components/ui/alert-dialog";
 
+interface PublishedArticleWithMetadata extends Article {
+  publicationMetadata?: {
+    collectionName?: string;
+    collectionDescription?: string;
+    nextArticleTitle?: string;
+    nextArticleDate?: string;
+  };
+}
+
 function AddArticlePage() {
   const router = useRouter();
 
   const [showEmailDialog, setShowEmailDialog] = React.useState(false);
-  const [articleData, setArticleData] = React.useState<{
-    title: string;
-    description: string;
-    slug: string;
-  } | null>(null);
+  const [articleData, setArticleData] =
+    React.useState<PublishedArticleWithMetadata | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const handleSubmit = async (data: ArticleFormData, coverImage?: File) => {
@@ -75,15 +81,12 @@ function AddArticlePage() {
         throw new Error(errorMessage);
       }
 
+      const result = await response.json();
       // Success: Ask to send notifications
       toast.success("Blog created successfully!");
 
-      // Set article data for email notification using the actual description
-      setArticleData({
-        title: data.title,
-        description: data.description,
-        slug: data.slug,
-      });
+      // Set article data (including publicationMetadata) for email notification
+      setArticleData(result);
       setShowEmailDialog(true);
     } finally {
       setIsSubmitting(false);
@@ -113,11 +116,16 @@ function AddArticlePage() {
         const batchSize = 5;
         let sentCount = 0;
 
-        // Use the article description directly as requested
+        // Use the article description and collection metadata
         const articleDetails = {
           title: articleData.title,
           description: articleData.description,
           slug: articleData.slug,
+          collectionName: articleData.publicationMetadata?.collectionName,
+          collectionDescription:
+            articleData.publicationMetadata?.collectionDescription,
+          nextArticleTitle: articleData.publicationMetadata?.nextArticleTitle,
+          nextArticleDate: articleData.publicationMetadata?.nextArticleDate,
         };
 
         for (let i = 0; i < total; i += batchSize) {
