@@ -2,6 +2,7 @@ import { validateRequest } from "@/auth";
 import prisma from "../../../../lib/prisma";
 import { put, del } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
+import { calculateReadTime } from "@/lib/utils";
 
 export async function GET(req: Request) {
   try {
@@ -90,13 +91,15 @@ export async function PATCH(req: Request) {
     const collectionId = formData.get("collectionId") as string | null;
     const category =
       (formData.get("category") as string) ||
-      (collectionId ? null : blog.category || "General");
+      (collectionId ? blog.category : "General");
     const content = formData.get("content") as string;
     const keywords = JSON.parse(formData.get("keywords") as string);
     const SLUG = formData.get("slug") as string;
     const status = formData.get("status") as string;
     const publishedAtStr = formData.get("publishedAt") as string | null;
     const coverImgFile = formData.get("coverImgUrl") as File | null;
+
+    const readTime = calculateReadTime(content);
 
     if (!Array.isArray(keywords)) {
       return new Response(
@@ -142,6 +145,7 @@ export async function PATCH(req: Request) {
       category: category as string | null,
       coverImgUrl,
       content,
+      readTime,
       keywords,
       slug: SLUG,
       collectionId: collectionId || null,
@@ -152,16 +156,13 @@ export async function PATCH(req: Request) {
     const updatedBlog = await prisma.articles.update({
       where: { slug: slug, authorId: loggedInUser.id },
       data: updatedData,
+      include: { collection: true },
     });
 
     let publicationMetadata = null;
     if (blog.status === "unpublished" && status === "published") {
       // Transitioned to published, fetch metadata for notifications
-      const collection = updatedBlog.collectionId
-        ? await prisma.collection.findUnique({
-            where: { id: updatedBlog.collectionId },
-          })
-        : null;
+      const collection = updatedBlog.collection;
 
       const nextArticle = updatedBlog.collectionId
         ? await prisma.articles.findFirst({
@@ -184,8 +185,15 @@ export async function PATCH(req: Request) {
 
     revalidatePath("/blog");
     revalidatePath(`/blog/${slug}`);
+    revalidatePath(`/blog/${SLUG}`);
+    if (updatedBlog.collection) {
+      revalidatePath(`/series/${updatedBlog.collection.slug}`);
+      revalidatePath(`/series/${updatedBlog.collection.slug}/${slug}`);
+      revalidatePath(`/series/${updatedBlog.collection.slug}/${SLUG}`);
+    }
     revalidatePath("/api/blogs");
     revalidatePath(`/api/blog/${slug}`);
+    revalidatePath(`/api/blog/${SLUG}`);
 
     return new Response(
       JSON.stringify({ ...updatedBlog, publicationMetadata }),
