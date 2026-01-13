@@ -241,7 +241,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
         href={
           content.collectionId
             ? `/collections/${content.collectionId}`
-            : "/collections"
+            : "/articles"
         }
         className="inline-flex items-center gap-2 text-slate-400 hover:text-white mb-6"
       >

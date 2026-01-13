@@ -90,7 +90,11 @@ export default function EditArticlePage() {
         setPublishedArticleData(updatedArticle);
         setShowEmailDialog(true);
       } else {
-        router.push("/collections");
+        router.push(
+          data.collectionId
+            ? `/collections/${data.collectionId}`
+            : "/collections"
+        );
       }
     } catch (error) {
       console.error("Error updating article:", error);
@@ -185,13 +189,21 @@ export default function EditArticlePage() {
       );
     } finally {
       setShowEmailDialog(false);
-      router.push("/collections");
+      router.push(
+        publishedArticleData.collectionId
+          ? `/collections/${publishedArticleData.collectionId}`
+          : "/collections"
+      );
     }
   };
 
   const handleSkipNotification = () => {
     setShowEmailDialog(false);
-    router.push("/collections");
+    router.push(
+      initialData?.collectionId
+        ? `/collections/${initialData.collectionId}`
+        : "/collections"
+    );
   };
 
   if (loading) {
