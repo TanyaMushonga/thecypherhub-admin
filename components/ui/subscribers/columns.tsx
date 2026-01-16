@@ -5,7 +5,6 @@ import { Button } from "../../../components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { formatDate } from "../../../lib/utils";
 
-
 export const columns: ColumnDef<Subscribers>[] = [
   {
     accessorKey: "email",
@@ -22,15 +21,7 @@ export const columns: ColumnDef<Subscribers>[] = [
       );
     },
   },
-  {
-    accessorKey: "status",
-    header: () => <div className="text-right">Status</div>,
-    cell: ({ row }) => {
-      const status = parseFloat(row.getValue("status"));
-      const formatted = status === 1 ? "Subscribed" : "Unsubscribed";
-      return <div className="text-right font-medium">{formatted}</div>;
-    },
-  },
+
   {
     accessorKey: "createdAt",
     header: () => <div className="text-right">Joined</div>,
