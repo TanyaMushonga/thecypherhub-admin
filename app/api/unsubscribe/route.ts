@@ -17,11 +17,10 @@ export async function POST(req: Request) {
         status: 400,
       });
     }
-    const updatedSubscriber = await prisma.subscribers.update({
+    const deletedSubscriber = await prisma.subscribers.delete({
       where: { email: subscriber.email },
-      data: { status: 0 },
     });
-    if (updatedSubscriber) {
+    if (deletedSubscriber) {
       return new Response(
         JSON.stringify({
           message: "Unsubscribed successfully, We're sad to see you go.",
