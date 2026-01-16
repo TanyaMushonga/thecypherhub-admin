@@ -1,6 +1,6 @@
 import { validateRequest } from "@/auth";
 import prisma from "../../../lib/prisma";
-import { sendConfirmationEmailAfterSubscribe } from "@/lib/emails";
+import { sendWelcomeEmail } from "@/lib/emails";
 
 export async function GET() {
   try {
@@ -46,56 +46,12 @@ export async function POST(req: Request) {
     });
 
     if (emailExist) {
-      const isSubscribed = emailExist.status === 1;
-      if (isSubscribed) {
-        return new Response(
-          JSON.stringify({
-            message: "You are already subscribed to our newsletter.",
-          }),
-          { status: 200 }
-        );
-      } else {
-        await prisma.subscribers.update({
-          where: { email },
-          data: { status: 1 },
-        });
-        const token = Math.random().toString(36).substring(2, 15);
-
-        const tokenExist = await prisma.verificationTokens.findUnique({
-          where: { token },
-        });
-        const emailExistInToken = await prisma.verificationTokens.findUnique({
-          where: { email },
-        });
-
-        if (tokenExist || emailExistInToken)
-          return new Response(
-            JSON.stringify({
-              error: "Something went wrong! Please try again later.",
-            }),
-            { status: 400 }
-          );
-
-        const verificationToken = await prisma.verificationTokens.create({
-          data: {
-            token,
-            email,
-          },
-        });
-
-        if (verificationToken) {
-          //send confirmation email
-          await sendConfirmationEmailAfterSubscribe(email, token);
-        }
-
-        return new Response(
-          JSON.stringify({
-            message:
-              "Thank you for subscribing to our newsletter, please check you inbox to confirm your subscription!.",
-          }),
-          { status: 200 }
-        );
-      }
+      return new Response(
+        JSON.stringify({
+          message: "You are already subscribed to our newsletter.",
+        }),
+        { status: 200 }
+      );
     }
     const data = {
       email,
@@ -105,40 +61,13 @@ export async function POST(req: Request) {
       data,
     });
 
-    //generate token
-    const token = Math.random().toString(36).substring(2, 15);
-
-    const tokenExist = await prisma.verificationTokens.findUnique({
-      where: { token },
-    });
-    const emailExistInToken = await prisma.verificationTokens.findUnique({
-      where: { email },
-    });
-
-    if (tokenExist || emailExistInToken)
-      return new Response(
-        JSON.stringify({
-          message: "Something went wrong! Please try again later.",
-        }),
-        { status: 400 }
-      );
-
-    const verificationToken = await prisma.verificationTokens.create({
-      data: {
-        token,
-        email,
-      },
-    });
-
-    if (verificationToken) {
-      //send confirmation email
-      await sendConfirmationEmailAfterSubscribe(email, token);
-    }
+    // Send welcome email
+    await sendWelcomeEmail(email);
 
     return new Response(
       JSON.stringify({
         message:
-          "Thank you for subscribing to our newsletter, please check you inbox to confirm your subscription!. You might need to check your spam folder if you don't see the email in your inbox.",
+          "Thank you for subscribing to our newsletter!",
       }),
       { status: 201 }
     );
