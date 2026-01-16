@@ -40,7 +40,6 @@ declare interface Comment {
 declare interface Subscribers {
   id: string;
   email: string;
-  status: 1 | 0;
   createdAt: string;
 }
 
