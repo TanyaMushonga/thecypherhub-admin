@@ -57,6 +57,7 @@ model Articles {
   collection   Collection? @relation(fields: [collectionId], references: [id])
   status       String     @default("unpublished") // published | unpublished
   publishedAt  DateTime?
+  isDeleted    Boolean    @default(false)
 
   @@index([createdAt])
   @@map("articles")
@@ -65,18 +66,11 @@ model Articles {
 model subscribers {
   id        String   @id @default(uuid()) @map("_id")
   email     String   @unique
-  status    Int      @default(0)
   createdAt DateTime @default(now())
 
   @@map("subscribers")
 }
 
-model verificationTokens {
-  id        String   @id @default(uuid()) @map("_id")
-  email     String   @unique
-  token     String   @unique
-  expiresAt DateTime?
-}
 
 model notes {
   id              String   @id @default(uuid()) @map("_id")
@@ -111,6 +105,7 @@ model Collection {
   articles    Articles[]
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  isDeleted   Boolean    @default(false)
 
   @@unique([authorId, name])
   @@map("collections")
