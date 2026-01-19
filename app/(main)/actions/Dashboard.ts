@@ -7,7 +7,6 @@ export async function getDashboardStats() {
     const [totalSubscribers, articlesCount, commentsCount, collectionsCount] =
       await Promise.all([
         prisma.subscribers.count(),
-        prisma.subscribers.count(),
         prisma.articles.count({
           where: { status: "published" },
         }),
@@ -15,6 +14,12 @@ export async function getDashboardStats() {
         prisma.collection.count(),
       ]);
 
+    console.log(
+      totalSubscribers,
+      articlesCount,
+      commentsCount,
+      collectionsCount,
+    );
     return {
       subscribers: totalSubscribers,
       activeSubscribers: totalSubscribers,

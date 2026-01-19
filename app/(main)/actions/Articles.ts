@@ -7,7 +7,7 @@ export const sendArticleGlimpseAction = async (
   articleTitle: string,
   articleSlug: string,
   articleDescription: string,
-  options?: { batchSize?: number; maxRetries?: number }
+  options?: { batchSize?: number; maxRetries?: number },
 ) => {
   const BATCH_SIZE = options?.batchSize || 20;
   const MAX_RETRIES = options?.maxRetries || 3;
@@ -27,7 +27,6 @@ export const sendArticleGlimpseAction = async (
 
     while (true) {
       const subscribers = await prisma.subscribers.findMany({
-        where: { status: 1 },
         select: { email: true },
         skip,
         take,
@@ -43,9 +42,9 @@ export const sendArticleGlimpseAction = async (
             retry(
               () =>
                 sendEmailToSubscribers(htmlContent, subject, subscriber.email),
-              MAX_RETRIES
-            ).catch(() => failedEmails.push(subscriber.email))
-          )
+              MAX_RETRIES,
+            ).catch(() => failedEmails.push(subscriber.email)),
+          ),
         );
 
         // Rate limiting: 1 second pause between batches to respect email provider limits
@@ -63,7 +62,11 @@ export const sendArticleGlimpseAction = async (
     };
   } catch (error) {
     console.error("Error in sendArticleGlimpseAction:", error);
-    return { success: false, error: error instanceof Error ? error.message : "An unknown error occurred" };
+    return {
+      success: false,
+      error:
+        error instanceof Error ? error.message : "An unknown error occurred",
+    };
   }
 };
 
