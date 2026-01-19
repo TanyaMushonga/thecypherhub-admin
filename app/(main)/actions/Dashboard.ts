@@ -14,12 +14,7 @@ export async function getDashboardStats() {
         prisma.collection.count(),
       ]);
 
-    console.log(
-      totalSubscribers,
-      articlesCount,
-      commentsCount,
-      collectionsCount,
-    );
+
     return {
       subscribers: totalSubscribers,
       activeSubscribers: totalSubscribers,
