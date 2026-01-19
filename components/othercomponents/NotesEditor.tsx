@@ -73,9 +73,9 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
 
         // Fix: Handle the API response structure (Array of objects)
         const subscribersList = Array.isArray(subData) ? subData : [];
-        const subscribers: string[] = subscribersList
-          .filter((sub: Subscribers) => sub.status === 1) // Only active subscribers? Assuming 1 is active based on API code
-          .map((sub: Subscribers) => sub.email);
+        const subscribers: string[] = subscribersList.map(
+          (sub: Subscribers) => sub.email,
+        );
 
         if (subscribers.length === 0) {
           toast.error("No active subscribers found");
@@ -93,7 +93,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
           const batch = subscribers.slice(i, i + batchSize);
 
           setStatus(
-            `Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total}) with 5 recipients`
+            `Sending batch ${Math.ceil((i + 1) / batchSize)} of ${Math.ceil(total / batchSize)}... (${sentCount}/${total}) with 5 recipients`,
           );
 
           // Pass empty noteId so we don't try to update a non-existent DB record checks
@@ -128,7 +128,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
     } catch (error: unknown) {
       console.error(error);
       toast.error(
-        error instanceof Error ? error.message : "Something went wrong"
+        error instanceof Error ? error.message : "Something went wrong",
       );
     } finally {
       setIsSending(false);
@@ -142,7 +142,7 @@ const NotesEditor: React.FC<NotesEditorProps> = ({ onNoteSent }) => {
     subject: string,
     content: string,
     noteId: string,
-    type: string
+    type: string,
   ) => {
     const response = await fetch("/api/send-batch", {
       method: "POST",
