@@ -4,25 +4,20 @@ import prisma from "@/lib/prisma";
 
 export async function getDashboardStats() {
   try {
-    const [
-      totalSubscribers,
-      activeSubscribers,
-      articlesCount,
-      commentsCount,
-      collectionsCount,
-    ] = await Promise.all([
-      prisma.subscribers.count(),
-      prisma.subscribers.count({ where: { status: 1 } }),
-      prisma.articles.count({
-        where: { status: "published" },
-      }),
-      prisma.comments.count(),
-      prisma.collection.count(),
-    ]);
+    const [totalSubscribers, articlesCount, commentsCount, collectionsCount] =
+      await Promise.all([
+        prisma.subscribers.count(),
+        prisma.subscribers.count(),
+        prisma.articles.count({
+          where: { status: "published" },
+        }),
+        prisma.comments.count(),
+        prisma.collection.count(),
+      ]);
 
     return {
       subscribers: totalSubscribers,
-      activeSubscribers,
+      activeSubscribers: totalSubscribers,
       articles: articlesCount,
       comments: commentsCount,
       collections: collectionsCount,
