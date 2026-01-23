@@ -41,9 +41,7 @@ export async function GET(request: Request) {
 
     const blogs = await prisma.articles.findMany({
       where,
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [{ updatedAt: "desc" }],
       include: {
         comments: {
           orderBy: {
@@ -84,7 +82,7 @@ export async function GET(request: Request) {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
   }
 }
