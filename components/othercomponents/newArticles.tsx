@@ -16,7 +16,7 @@ import {
 } from "../ui/alert-dialog";
 import toast from "react-hot-toast";
 import { useFetchArticles } from "../../hooks/useFetchArticles";
-import { formatDate } from "../../lib/utils";
+import { formatDate, getEffectiveDate } from "../../lib/utils";
 import axios from "axios";
 
 function NewArticles() {
@@ -63,7 +63,7 @@ function NewArticles() {
                       {article.title}
                     </p>
                     <p className="text-slate-400 text-xs mt-0.5">
-                      {formatDate(new Date(article?.createdAt))}
+                      {formatDate(getEffectiveDate(article)!)}
                     </p>
                   </div>
                 </Link>
