@@ -27,7 +27,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
-import { formatDate } from "../../lib/utils";
+import { formatDate, getEffectiveDate } from "../../lib/utils";
 import axios from "axios";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
@@ -67,7 +67,7 @@ function ArticleList() {
           setPage((prev) => prev + 1);
         }
       },
-      { threshold: 1.0 }
+      { threshold: 1.0 },
     );
 
     const currentTarget = observerTarget.current;
@@ -130,7 +130,7 @@ function ArticleList() {
                     {article.title}
                   </p>
                   <div className="flex items-center gap-2 text-xs text-slate-400 mb-1">
-                    <span>{formatDate(new Date(article?.createdAt))}</span>
+                    <span>{formatDate(getEffectiveDate(article)!)}</span>
                     <span>•</span>
                     <span>{article.category}</span>
                   </div>
