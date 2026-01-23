@@ -129,9 +129,7 @@ export default function EditArticlePage() {
         throw new Error(subData.error || "Failed to fetch subscribers");
 
       const subscribersList = Array.isArray(subData) ? subData : [];
-      const subscribers: string[] = subscribersList
-        .filter((sub: Subscribers) => sub.status === 1)
-        .map((sub: Subscribers) => sub.email);
+      const subscribers: string[] = subscribersList.map((sub: Subscribers) => sub.email);
 
       if (subscribers.length === 0) {
         toast.error("No active subscribers found", { id: "sending" });
