@@ -3,7 +3,7 @@ import { lucia } from "../auth";
 import prisma from "../lib/prisma";
 import { signupSchema, signupValues } from "../lib/zodvalidations";   
 import { hash } from "@node-rs/argon2";
-import { isRedirectError } from "next/dist/client/components/redirect";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -71,7 +71,8 @@ export async function signUp(
 
     const session = await lucia.createSession(user.id, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
-    cookies().set(
+    const cookieStore = await cookies();
+    cookieStore.set(
       sessionCookie.name,
       sessionCookie.value,
       sessionCookie.attributes
