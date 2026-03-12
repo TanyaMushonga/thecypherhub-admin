@@ -78,9 +78,9 @@ export const CommentNotificationEmail = ({
                 as="h3"
                 style={{
                   color: "rgb(31,41,55)",
-                  fontSize: "15px",
+                  fontSize: "17px",
                   fontWeight: 600,
-                  lineHeight: "22px",
+                  lineHeight: "24px",
                   margin: "0px",
                 }}
               >
@@ -89,9 +89,9 @@ export const CommentNotificationEmail = ({
               <Text
                 style={{
                   color: "rgb(107,114,128)",
-                  fontSize: "14px",
+                  fontSize: "16px",
                   fontWeight: 500,
-                  lineHeight: "16px",
+                  lineHeight: "20px",
                   margin: "0px",
                 }}
               >
@@ -106,7 +106,7 @@ export const CommentNotificationEmail = ({
                   href="https://github.com/TanyaMushonga"
                   style={{
                     color: "#2563eb",
-                    fontSize: "14px",
+                    fontSize: "16px",
                     fontWeight: 500,
                     marginRight: "10px",
                     textDecoration: "underline",
@@ -130,7 +130,7 @@ export const CommentNotificationEmail = ({
                   href="https://tanyaradzwatmushonga.me"
                   style={{
                     color: "#2563eb",
-                    fontSize: "14px",
+                    fontSize: "16px",
                     fontWeight: 500,
                     textDecoration: "underline",
                   }}
@@ -193,15 +193,15 @@ const content = {
 
 const title = {
   color: "#333",
-  fontSize: "24px",
+  fontSize: "27px",
   fontWeight: "bold",
   margin: "0 0 15px",
 };
 
 const commentStyle = {
   color: "#555",
-  fontSize: "16px",
-  lineHeight: "1.6",
+  fontSize: "18px",
+  lineHeight: "1.7",
   margin: "0 0 15px",
 };
 
@@ -222,8 +222,8 @@ const footerDivider = {
 };
 
 const footerText = {
-  fontSize: "12px",
-  lineHeight: "15px",
+  fontSize: "14px",
+  lineHeight: "20px",
   color: "#9199a1",
   margin: "0",
 };
@@ -232,7 +232,7 @@ const footerLink = {
   display: "inline-block",
   color: "#9199a1",
   textDecoration: "underline",
-  fontSize: "12px",
+  fontSize: "14px",
   marginRight: "10px",
   marginBottom: "0",
   marginTop: "8px",
@@ -240,8 +240,8 @@ const footerLink = {
 
 const footerAddress = {
   margin: "4px 0",
-  fontSize: "12px",
-  lineHeight: "15px",
+  fontSize: "14px",
+  lineHeight: "20px",
   color: "#9199a1",
 };
 
@@ -249,8 +249,8 @@ const footerHeart = {
   borderRadius: "1px",
   border: "1px solid #d6d9dc",
   padding: "4px 6px 3px 6px",
-  fontSize: "11px",
-  lineHeight: "11px",
+  fontSize: "13px",
+  lineHeight: "13px",
   fontFamily: "Consolas,monospace",
   color: "#e06c77",
   maxWidth: "min-content",

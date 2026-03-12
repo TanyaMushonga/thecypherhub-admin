@@ -163,9 +163,9 @@ export const NotificationEmail = ({
                   as="h3"
                   style={{
                     color: "rgb(31,41,55)",
-                    fontSize: "15px",
+                    fontSize: "17px",
                     fontWeight: 600,
-                    lineHeight: "22px",
+                    lineHeight: "24px",
                     margin: "0px",
                   }}
                 >
@@ -174,9 +174,9 @@ export const NotificationEmail = ({
                 <Text
                   style={{
                     color: "rgb(107,114,128)",
-                    fontSize: "14px",
+                    fontSize: "16px",
                     fontWeight: 500,
-                    lineHeight: "16px",
+                    lineHeight: "20px",
                     margin: "0px",
                   }}
                 >
@@ -191,7 +191,7 @@ export const NotificationEmail = ({
                     href="https://github.com/TanyaMushonga"
                     style={{
                       color: "#2563eb",
-                      fontSize: "14px",
+                      fontSize: "16px",
                       fontWeight: 500,
                       marginRight: "10px",
                       textDecoration: "underline",
@@ -215,7 +215,7 @@ export const NotificationEmail = ({
                     href="https://tanyaradzwatmushonga.me"
                     style={{
                       color: "#2563eb",
-                      fontSize: "14px",
+                      fontSize: "16px",
                       fontWeight: 500,
                       textDecoration: "underline",
                     }}
@@ -270,14 +270,14 @@ const headerContent = { padding: "20px 30px 15px" };
 
 const headerContentTitle = {
   color: "#fff",
-  fontSize: "25px",
+  fontSize: "28px",
   fontWeight: "bold",
-  lineHeight: "24px",
+  lineHeight: "28px",
 };
 
 const headerContentSubtitle = {
   color: "#fff",
-  fontSize: "15px",
+  fontSize: "17px",
 };
 
 const headerImageContainer = {
@@ -309,14 +309,14 @@ const header = {
 const title = {
   margin: "0 0 15px",
   fontWeight: "bold",
-  fontSize: "21px",
-  lineHeight: "21px",
+  fontSize: "24px",
+  lineHeight: "28px",
   color: "#0c0d0e",
 };
 
 const paragraph = {
-  fontSize: "15px",
-  lineHeight: "26px",
+  fontSize: "17px",
+  lineHeight: "28px",
   color: "#3c3f44",
 };
 
@@ -332,7 +332,7 @@ const articleCard = {
 const articleTitleStyle = {
   marginTop: "0",
   marginBottom: "8px",
-  fontSize: "18px",
+  fontSize: "20px",
   fontWeight: "600",
 };
 
@@ -343,8 +343,8 @@ const linkTitle = {
 
 const description = {
   color: "#4b5563",
-  fontSize: "14px",
-  lineHeight: "20px",
+  fontSize: "16px",
+  lineHeight: "24px",
   marginBottom: "12px",
 };
 
@@ -352,12 +352,12 @@ const button = {
   backgroundColor: "#2563eb",
   borderRadius: "5px",
   color: "#fff",
-  fontSize: "14px",
+  fontSize: "16px",
   fontWeight: "bold",
   textDecoration: "none",
   textAlign: "center" as const,
   display: "inline-block",
-  padding: "8px 16px",
+  padding: "10px 20px",
 };
 
 const collectionInfo = {
@@ -369,16 +369,16 @@ const collectionInfo = {
 };
 
 const collectionText = {
-  fontSize: "14px",
+  fontSize: "16px",
   color: "#1e40af",
   margin: "0 0 4px 0",
 };
 
 const collectionDesc = {
-  fontSize: "13px",
+  fontSize: "15px",
   color: "#374151",
   margin: "0",
-  lineHeight: "18px",
+  lineHeight: "22px",
 };
 
 const nextArticleCard = {
@@ -390,7 +390,7 @@ const nextArticleCard = {
 };
 
 const nextTitle = {
-  fontSize: "13px",
+  fontSize: "15px",
   fontWeight: "bold",
   textTransform: "uppercase" as const,
   color: "#6b7280",
@@ -399,13 +399,13 @@ const nextTitle = {
 };
 
 const nextArticleText = {
-  fontSize: "15px",
+  fontSize: "17px",
   color: "#111827",
   margin: "0 0 4px 0",
 };
 
 const nextDate = {
-  fontSize: "12px",
+  fontSize: "14px",
   color: "#6b7280",
   margin: "0",
 };
@@ -421,8 +421,8 @@ const footerDivider = {
 };
 
 const footerText = {
-  fontSize: "12px",
-  lineHeight: "15px",
+  fontSize: "14px",
+  lineHeight: "20px",
   color: "#9199a1",
   margin: "0",
 };
@@ -431,7 +431,7 @@ const footerLink = {
   display: "inline-block",
   color: "#9199a1",
   textDecoration: "underline",
-  fontSize: "12px",
+  fontSize: "14px",
   marginRight: "10px",
   marginBottom: "0",
   marginTop: "8px",
@@ -439,8 +439,8 @@ const footerLink = {
 
 const footerAddress = {
   margin: "4px 0",
-  fontSize: "12px",
-  lineHeight: "15px",
+  fontSize: "14px",
+  lineHeight: "20px",
   color: "#9199a1",
 };
 
@@ -448,8 +448,8 @@ const footerHeart = {
   borderRadius: "1px",
   border: "1px solid #d6d9dc",
   padding: "4px 6px 3px 6px",
-  fontSize: "11px",
-  lineHeight: "11px",
+  fontSize: "13px",
+  lineHeight: "13px",
   fontFamily: "Consolas,monospace",
   color: "#e06c77",
   maxWidth: "min-content",
