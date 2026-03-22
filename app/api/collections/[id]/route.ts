@@ -20,6 +20,22 @@ export async function GET(req: Request) {
       },
       include: {
         articles: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            category: true,
+            content: true,
+            readTime: true,
+            createdAt: true,
+            updatedAt: true,
+            authorId: true,
+            keywords: true,
+            slug: true,
+            collectionId: true,
+            status: true,
+            publishedAt: true,
+          },
           orderBy: {
             createdAt: "asc",
           },

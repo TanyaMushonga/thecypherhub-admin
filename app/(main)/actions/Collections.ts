@@ -11,7 +11,24 @@ export async function getCollections(): Promise<Collection[]> {
   return (await prisma.collection.findMany({
     orderBy: { createdAt: "desc" },
     include: {
-      articles: true,
+      articles: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          category: true,
+          content: true,
+          readTime: true,
+          createdAt: true,
+          updatedAt: true,
+          authorId: true,
+          keywords: true,
+          slug: true,
+          collectionId: true,
+          status: true,
+          publishedAt: true,
+        },
+      },
     },
   })) as unknown as Collection[];
 }
@@ -26,6 +43,22 @@ export async function getCollectionById(
     where: { id },
     include: {
       articles: {
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          category: true,
+          content: true,
+          readTime: true,
+          createdAt: true,
+          updatedAt: true,
+          authorId: true,
+          keywords: true,
+          slug: true,
+          collectionId: true,
+          status: true,
+          publishedAt: true,
+        },
         orderBy: { createdAt: "asc" },
       },
     },

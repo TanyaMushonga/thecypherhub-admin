@@ -12,7 +12,24 @@ export async function GET() {
         createdAt: "desc",
       },
       include: {
-        articles: true,
+        articles: {
+          select: {
+            id: true,
+            title: true,
+            description: true,
+            category: true,
+            content: true,
+            readTime: true,
+            createdAt: true,
+            updatedAt: true,
+            authorId: true,
+            keywords: true,
+            slug: true,
+            collectionId: true,
+            status: true,
+            publishedAt: true,
+          },
+        },
       },
     });
 
