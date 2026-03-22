@@ -8,13 +8,14 @@ import { ArticleRoadmap } from "@/components/collections/ArticleRoadmap";
 import { CollectionStats } from "@/components/collections/CollectionStats";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default async function CollectionDetailPage({ params }: PageProps) {
-  const collection = await getCollectionById(params.id);
+  const { id } = await params;
+  const collection = await getCollectionById(id);
 
   if (!collection) {
     return (
