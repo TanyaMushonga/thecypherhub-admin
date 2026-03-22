@@ -1,7 +1,7 @@
 import prisma from "../../../lib/prisma";
 import NodeCache from "node-cache";
 
-const cache = new NodeCache({ stdTTL: 518400 });
+const cache = new NodeCache({ stdTTL: 604800 });
 
 export async function GET(request: Request) {
   try {
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
       return new Response(JSON.stringify(cachedResponse), {
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "s-maxage=518400, stale-while-revalidate",
+          "Cache-Control": "s-maxage=604800, stale-while-revalidate",
         },
       });
     }
@@ -70,7 +70,7 @@ export async function GET(request: Request) {
     return new Response(JSON.stringify(responsePayload), {
       headers: {
         "Content-Type": "application/json",
-        "Cache-Control": "s-maxage=518400, stale-while-revalidate", // Cache for 6 days
+        "Cache-Control": "s-maxage=604800, stale-while-revalidate", // Cache for 1 week
       },
     });
   } catch (error) {

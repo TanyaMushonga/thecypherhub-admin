@@ -175,6 +175,35 @@ export async function PATCH(req: Request) {
     revalidatePath(`/api/blog/${slug}`);
     revalidatePath(`/api/blog/${SLUG}`);
 
+    // Revalidate the public blog
+    try {
+      const pathsToRevalidate = ["/blog", `/blog/${slug}`, "/api/blogs", "/"];
+      if (slug !== SLUG) {
+        pathsToRevalidate.push(`/blog/${SLUG}`);
+      }
+      if (updatedBlog.collection?.slug) {
+        pathsToRevalidate.push(`/series/${updatedBlog.collection.slug}`);
+        pathsToRevalidate.push(`/series/${updatedBlog.collection.slug}/${slug}`);
+        if (slug !== SLUG) {
+          pathsToRevalidate.push(
+            `/series/${updatedBlog.collection.slug}/${SLUG}`
+          );
+        }
+      }
+
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/revalidate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paths: pathsToRevalidate,
+        }),
+      });
+    } catch (revalidateError) {
+      console.error("Failed to revalidate public blog:", revalidateError);
+    }
+
     return new Response(
       JSON.stringify({ ...updatedBlog, publicationMetadata }),
       {
@@ -227,6 +256,21 @@ export async function DELETE(req: Request) {
     revalidatePath("/blog");
     revalidatePath(`/blog/${slug}`);
     revalidatePath("/api/blogs");
+
+    // Revalidate the public blog
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/revalidate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paths: ["/blog", `/blog/${slug}`, "/api/blogs", "/"],
+        }),
+      });
+    } catch (revalidateError) {
+      console.error("Failed to revalidate public blog:", revalidateError);
+    }
 
     return new Response(
       JSON.stringify({ message: "Blog deleted successfully" }),

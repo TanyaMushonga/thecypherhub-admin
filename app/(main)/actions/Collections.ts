@@ -93,5 +93,30 @@ export async function toggleArticlePublication(
   revalidatePath("/articles");
   revalidatePath("/");
 
+  // Revalidate the public blog
+  try {
+    const pathsToRevalidate = ["/blog", `/blog/${slug}`, "/api/blogs", "/"];
+    // If it's part of a collection/series, revalidate that too on public site
+    const collection = await prisma.collection.findUnique({
+      where: { id: article.collectionId || "" },
+    });
+    if (collection?.slug) {
+      pathsToRevalidate.push(`/series/${collection.slug}`);
+      pathsToRevalidate.push(`/series/${collection.slug}/${slug}`);
+    }
+
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/revalidate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        paths: pathsToRevalidate,
+      }),
+    });
+  } catch (revalidateError) {
+    console.error("Failed to revalidate public blog:", revalidateError);
+  }
+
   return updatedArticle;
 }

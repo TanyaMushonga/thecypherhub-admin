@@ -153,6 +153,21 @@ export async function POST(req: Request) {
     revalidatePath(`/blog/${slug}`);
     revalidatePath("/api/blogs");
 
+    // Revalidate the public blog
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/revalidate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          paths: ["/blog", `/blog/${slug}`, "/api/blogs", "/"],
+        }),
+      });
+    } catch (revalidateError) {
+      console.error("Failed to revalidate public blog:", revalidateError);
+    }
+
     return new Response(
       JSON.stringify({
         ...createdArticle,
