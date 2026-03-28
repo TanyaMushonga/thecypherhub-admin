@@ -75,13 +75,21 @@ const CreateBlog = () => {
   };
 
   const handleKeywordInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && keywordInput.trim()) {
-      setContent((prev) => ({
-        ...prev,
-        keywords: [...(prev.keywords || []), keywordInput.trim()],
-      }));
-      setKeywordInput("");
+    if ((e.key === "Enter" || e.key === ",") && keywordInput.trim()) {
       e.preventDefault();
+      // Split by commas, trim each tag, removing empty strings and duplicates
+      const tags = keywordInput
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "" && !content.keywords.includes(tag));
+
+      if (tags.length > 0) {
+        setContent((prev) => ({
+          ...prev,
+          keywords: [...(prev.keywords || []), ...tags],
+        }));
+      }
+      setKeywordInput("");
     }
   };
 
@@ -286,7 +294,7 @@ const CreateBlog = () => {
                   value={keywordInput}
                   onChange={(e) => setKeywordInput(e.target.value)}
                   onKeyDown={handleKeywordInput}
-                  placeholder="Type a keyword and press Enter"
+                  placeholder="Type keyword(s) separated by commas and press Enter"
                 />
               </div>
               <div className="flex flex-col w-full mb-4">

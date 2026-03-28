@@ -105,12 +105,18 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
 
 
   const handleKeywordInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && keywordInput.trim()) {
+    if ((e.key === "Enter" || e.key === ",") && keywordInput.trim()) {
       e.preventDefault();
-      if (!content.keywords.includes(keywordInput.trim())) {
+      // Split by commas, trim each tag, removing empty strings and duplicates
+      const tags = keywordInput
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "" && !content.keywords.includes(tag));
+
+      if (tags.length > 0) {
         setContent((prev) => ({
           ...prev,
-          keywords: [...(prev.keywords || []), keywordInput.trim()],
+          keywords: [...(prev.keywords || []), ...tags],
         }));
       }
       setKeywordInput("");
@@ -369,7 +375,7 @@ const BlogEditor: React.FC<BlogEditorProps> = ({
                 type="text"
                 id="keywords"
                 className="w-full bg-blue-900/50 border border-blue-800 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-slate-500"
-                placeholder="Press Enter to add"
+                placeholder="Type keyword(s) separated by commas and press Enter"
                 value={keywordInput}
                 onChange={(e) => setKeywordInput(e.target.value)}
                 onKeyDown={handleKeywordInput}
