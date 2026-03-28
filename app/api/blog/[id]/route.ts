@@ -130,9 +130,7 @@ export async function PATCH(req: Request) {
         readTime,
         keywords,
         slug: SLUG,
-        collection: collectionId
-          ? { connect: { id: collectionId } }
-          : { disconnect: true },
+        // collectionId: collectionId || null,
         status: status,
         publishedAt,
       },

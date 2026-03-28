@@ -75,13 +75,33 @@ const CreateBlog = () => {
   };
 
   const handleKeywordInput = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === "Enter" || e.key === ",") && keywordInput.trim()) {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
-      // Split by commas, trim each tag, removing empty strings and duplicates
-      const tags = keywordInput
-        .split(",")
+      const currentInput = keywordInput.trim();
+      if (!currentInput) return;
+
+      const tags = currentInput
+        .split(/[,，;；]/)
         .map((tag) => tag.trim())
-        .filter((tag) => tag !== "" && !content.keywords.includes(tag));
+        .filter((tag) => tag !== "" && !(content.keywords || []).includes(tag));
+
+      if (tags.length > 0) {
+        setContent((prev) => ({
+          ...prev,
+          keywords: [...(prev.keywords || []), ...tags],
+        }));
+      }
+      setKeywordInput("");
+    }
+  };
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedData = e.clipboardData.getData("text");
+    if (pastedData.includes(",") || pastedData.includes(";")) {
+      e.preventDefault();
+      const tags = pastedData
+        .split(/[,，;；]/)
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "" && !(content.keywords || []).includes(tag));
 
       if (tags.length > 0) {
         setContent((prev) => ({
@@ -294,6 +314,7 @@ const CreateBlog = () => {
                   value={keywordInput}
                   onChange={(e) => setKeywordInput(e.target.value)}
                   onKeyDown={handleKeywordInput}
+                  onPaste={handlePaste}
                   placeholder="Type keyword(s) separated by commas and press Enter"
                 />
               </div>

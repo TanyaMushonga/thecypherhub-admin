@@ -46,11 +46,30 @@ export function QuickAddArticleDialog({
 
 
   const handleKeywordAdd = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === "Enter" || e.key === ",") && keywordInput.trim()) {
+    if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
-      // Split by commas, trim each tag, removing empty strings and duplicates
-      const tags = keywordInput
-        .split(",")
+      const currentInput = keywordInput.trim();
+      if (!currentInput) return;
+
+      // Split by commas (common or full-width) and semicolons
+      const tags = currentInput
+        .split(/[,，;；]/)
+        .map((tag) => tag.trim())
+        .filter((tag) => tag !== "" && !newArtKeywords.includes(tag));
+
+      if (tags.length > 0) {
+        setNewArtKeywords([...newArtKeywords, ...tags]);
+      }
+      setKeywordInput("");
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    const pastedData = e.clipboardData.getData("text");
+    if (pastedData.includes(",") || pastedData.includes(";")) {
+      e.preventDefault();
+      const tags = pastedData
+        .split(/[,，;；]/)
         .map((tag) => tag.trim())
         .filter((tag) => tag !== "" && !newArtKeywords.includes(tag));
 
@@ -295,6 +314,7 @@ export function QuickAddArticleDialog({
                 value={keywordInput}
                 onChange={(e) => setKeywordInput(e.target.value)}
                 onKeyDown={handleKeywordAdd}
+                onPaste={handlePaste}
                 className="bg-blue-950/50 border-blue-900 focus:ring-blue-500 placeholder:text-slate-500"
                 placeholder="Type keyword(s) separated by commas and press Enter"
               />
