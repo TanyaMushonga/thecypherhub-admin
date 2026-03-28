@@ -73,20 +73,6 @@ export async function POST(req: Request) {
       publishedAt = new Date(publishedAtStr);
     }
 
-    const data = {
-      title,
-      description,
-      category: category as string | null,
-      content,
-      keywords,
-      slug,
-      readTime: readTime,
-      authorId: loggedInUser.id,
-      collectionId: collectionId || null,
-      status: status,
-      publishedAt,
-    };
-
     // Check if slug already exists
     if (slug) {
       const existingArticleBySlug = await prisma.articles.findUnique({
@@ -122,7 +108,19 @@ export async function POST(req: Request) {
     }
 
     const createdArticle = await prisma.articles.create({
-      data,
+      data: {
+        title,
+        description,
+        category: category as string | null,
+        content,
+        keywords,
+        slug,
+        readTime: readTime,
+        author: { connect: { id: loggedInUser.id } },
+        ...(collectionId ? { collection: { connect: { id: collectionId } } } : {}),
+        status: status,
+        publishedAt,
+      },
       include: { collection: true },
     });
 

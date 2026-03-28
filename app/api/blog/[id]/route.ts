@@ -120,22 +120,22 @@ export async function PATCH(req: Request) {
       // or keep it null if it's still unpublished.
     }
 
-    const updatedData = {
-      title,
-      description,
-      category: category as string | null,
-      content,
-      readTime,
-      keywords,
-      slug: SLUG,
-      collectionId: collectionId || null,
-      status: status,
-      publishedAt,
-    };
-
     const updatedBlog = await prisma.articles.update({
       where: { slug: slug, authorId: loggedInUser.id },
-      data: updatedData,
+      data: {
+        title,
+        description,
+        category: category as string | null,
+        content,
+        readTime,
+        keywords,
+        slug: SLUG,
+        collection: collectionId
+          ? { connect: { id: collectionId } }
+          : { disconnect: true },
+        status: status,
+        publishedAt,
+      },
       include: { collection: true },
     });
 
