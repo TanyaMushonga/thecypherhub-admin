@@ -117,7 +117,7 @@ export async function POST(req: Request) {
         slug,
         readTime: readTime,
         authorId: loggedInUser.id,
-        collectionId: collectionId || null,
+        collectionId: collectionId && collectionId !== "" ? collectionId : null,
         status: status,
         publishedAt,
       },
